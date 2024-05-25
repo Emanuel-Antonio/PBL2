@@ -28,7 +28,6 @@ def get_user(user_id):
 @app.route('/users', methods=['POST'])
 def createUser():
     newUser = request.json
-    newUser['id'] = len(users) + 1
     users.append(newUser)
     return jsonify(newUser), 201
 
@@ -36,7 +35,6 @@ def createUser():
 @app.route('/requests', methods=['POST'])
 def createRequests():
     newRequests = request.json
-    newRequests['id'] = len(requests) + 1
     requests.append(newRequests)
     return jsonify(newRequests), 201
 

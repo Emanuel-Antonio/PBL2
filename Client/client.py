@@ -1,9 +1,10 @@
 class Client:
-    def __init__(self, nome, idade, endereco, saldo=0.0):
+    def __init__(self, nome, idade, password, id, saldo=0.0):
         self.nome = nome
         self.idade = idade
-        self.endereco = endereco
+        self.password = password
         self.saldo = saldo
+        self.id = id
 
     def depositar(self, quantia):
         if quantia > 0:
@@ -24,5 +25,4 @@ class Client:
     def exibir_informacoes(self):
         print(f'Nome: {self.nome}')
         print(f'Idade: {self.idade}')
-        print(f'Endereço: {self.endereco}')
         print(f'Saldo: R${self.saldo:.2f}')
