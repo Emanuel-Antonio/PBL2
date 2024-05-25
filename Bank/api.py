@@ -3,66 +3,66 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 
 # Lista de usuários
-dispositivos = []
+users = []
 
-requisicoes = []
+requests = []
 
 # Rota para listar todos os usuários
-@app.route('/dispositivos', methods=['GET'])
-def get_usuarios():
-    return jsonify(dispositivos)
+@app.route('/users', methods=['GET'])
+def get_users():
+    return jsonify(users)
 
-@app.route('/requisicoes', methods=['GET'])
-def get_requisicoes():
-    return jsonify(requisicoes)
+@app.route('/requests', methods=['GET'])
+def get_requests():
+    return jsonify(requests)
 
 # Rota para obter um usuário por ID
-@app.route('/dispositivos/<int:dispositivo_id>', methods=['GET'])
-def get_usuario(dispositivo_id):
-    dispositivo = next((dispositivo for dispositivo in dispositivos if dispositivo['id'] == dispositivo_id), None)
-    if dispositivo:
-        return jsonify(dispositivo)
+@app.route('/users/<int:user_id>', methods=['GET'])
+def get_user(user_id):
+    user = next((user for user in users if user['id'] == user_id), None)
+    if user:
+        return jsonify(user)
     return jsonify({'message': 'Sensor não encontrado'}), 404
 
 # Rota para criar um novo usuário
-@app.route('/dispositivos', methods=['POST'])
-def criar_usuario():
-    novo_dispositivo = request.json
-    novo_dispositivo['id'] = len(dispositivos) + 1
-    dispositivos.append(novo_dispositivo)
-    return jsonify(novo_dispositivo), 201
+@app.route('/users', methods=['POST'])
+def createUser():
+    newUser = request.json
+    newUser['id'] = len(users) + 1
+    users.append(newUser)
+    return jsonify(newUser), 201
 
 # Rota para criar um novo usuário
-@app.route('/requisicoes', methods=['POST'])
-def criar_requisicao():
-    nova_requisicao = request.json
-    nova_requisicao['id'] = len(requisicoes) + 1
-    requisicoes.append(nova_requisicao)
-    return jsonify(nova_requisicao), 201
+@app.route('/requests', methods=['POST'])
+def createRequests():
+    newRequests = request.json
+    newRequests['id'] = len(requests) + 1
+    requests.append(newRequests)
+    return jsonify(newRequests), 201
 
 # Rota para atualizar um usuário existente
-@app.route('/dispositivo/<int:dispositivo_id>', methods=['PUT'])
-def atualizar_usuario(dispositivo_id):
-    dispositivo = next((dispositivo for dispositivo in dispositivos if dispositivo['id'] == dispositivo_id), None)
-    if not dispositivo:
-        return jsonify({'message': 'Sensor não encontrado'}), 404
-    dados_atualizados = request.json
-    dispositivo.update(dados_atualizados)
-    return jsonify(dispositivo)
+@app.route('/user/<int:user_id>', methods=['PUT'])
+def updateUser(user_id):
+    user = next((user for user in users if user['id'] == user_id), None)
+    if not user:
+        return jsonify({'message': 'User não encontrado'}), 404
+    dataUpdate = request.json
+    user.update(dataUpdate)
+    return jsonify(user)
 
 # Rota para excluir um usuário
-@app.route('/dispositivo/<int:dispositivo_id>', methods=['DELETE'])
-def excluir_usuario(dispositivo_id):
-    global dispositivos
-    dispositivos = [dispositivo for dispositivo in dispositivos if dispositivo['id'] != dispositivo_id]
-    return jsonify({'message': 'Dispositivo excluído com sucesso'})
+@app.route('/user/<int:user_id>', methods=['DELETE'])
+def deleteUser(user_id):
+    global users
+    users = [user for user in users if user['id'] != user_id]
+    return jsonify({'message': 'User excluído com sucesso'})
 
-# Rota para excluir um usuário
-@app.route('/requisicoes/<int:requisicao_id>', methods=['DELETE'])
-def excluir_requisicao(requisicao_id):
-    global requisicoes
-    requisicoes = [requisicao for requisicao in requisicoes if requisicao['id'] != requisicao_id]
-    return jsonify({'message': 'Dispositivo excluído com sucesso'})
+# Rota para excluir uma requisição
+@app.route('/requests/<int:request_id>', methods=['DELETE'])
+def deleteRequest(request_id):
+    global requests
+    requests = [request for request in requests if request['id'] != request_id]
+    return jsonify({'message': 'Request excluído com sucesso'})
 
 if __name__ == "__main__":
     # Inicia a aplicação Flask

@@ -12,7 +12,7 @@ COPY client.py .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # variável de ambiente IP
-ENV IP 192.168.1.100
+ENV bank 192.168.1.100
 
 #Comando para iniciar o aplicativo
 CMD ["python", "client.py"]
