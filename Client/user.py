@@ -90,14 +90,48 @@ def logged(cliente):
         elif opcao == 3:
             break
 
+def loggedAdmin(cliente, banks):
+    while True:
+        cliente
+        print(f"------------------------------\nTitular: {cliente.nome}\nSaldo: {cliente.saldo}\n\nPara Adicionar outro Banco digite 1\nPara Sair digite 2")
+        opcao = int(input("==> "))
+        if opcao == 1:
+            print('Digite o endereco MAC do servidor\n')
+            mac = input("==> ")
+            print('Digite o apelido sendo um número de 2 digitos\n')
+            apelido = input("==>")
+            print('Confirme a operação com a sua senha\n')
+            senha = input("==>")
+            if senha == cliente.password:
+                banks[apelido] = mac
+                return banks
+            else:
+                print("Operação cancelada devido a senha estar incorreta")
+        elif opcao == 2:
+            return banks
+
+def requestSaque():
+    print('')
+    
+def requestDeposito():
+    print('')
+    
+def requestTransferencia():
+    print('')
+
 def main():
     users = []
     users = getUsers()
+    banks = {}
     while True:
         cliente = login(users)
         if cliente != False:
             if users[0]['id'] == cliente.id:
+                banks = loggedAdmin(cliente, banks)
+            else:
                 logged(cliente)
+        print(banks)
+
         
 if __name__=="__main__":
     main()
