@@ -59,7 +59,7 @@ def deleteUser(user_id):
 @app.route('/requests/<int:request_id>', methods=['DELETE'])
 def deleteRequest(request_id):
     global requests
-    requests = [request for request in requests if request['id'] != request_id]
+    requests = [request for request in requests if request['destino'] != request_id]
     return jsonify({'message': 'Request excluído com sucesso'})
 
 if __name__ == "__main__":
