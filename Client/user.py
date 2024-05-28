@@ -11,6 +11,9 @@ def login(users):
     print("------------------------------")
     print(" 1 - Entrar\n 2 - Criar conta\n ")
     opcao = int(input("===>"))
+    codUtilizados = []
+    for item in users:
+        codUtilizados.append(item['id'])
     print("------------------------------")
     while opcao < 1 or opcao > 2:
         print("Escreva uma opção válida!\n")
@@ -26,13 +29,17 @@ def login(users):
                 return cliente
         else:
             print("Usuário ou senha inválido!\n Tente acessar uma conta existente ou crie uma conta")
-                
+            return False   
     else:
         name = input("Seu nome: ")
         age = int(input("Sua Idade: "))
         passwor = input("Sua senha: ")
         id = random.randint(100000, 999999)
+        while id in codUtilizados:
+            id = random.randint(100000, 999999)
         createAccount(id, name, age, passwor)
+        return Client(name, age, passwor, id, 0.0)
+
                 
 def createAccount(id, name, age, password):
     global bank
@@ -71,12 +78,26 @@ def getUsers():
 def sendRequest():
     print("")       
      
+def logged(cliente):
+    while True:
+        cliente
+        print(f"------------------------------\nTitular: {cliente.nome}\nSaldo: {cliente.saldo}\n\nPara Deposito digite 1:\nPara Saque digite 2:\nPara Transferir digite 3\nPara Sair digite 4")
+        opcao = int(input("==> "))
+        if opcao == 1:
+            cliente
+        elif opcao == 2:
+            pass
+        elif opcao == 3:
+            break
+
 def main():
     users = []
     users = getUsers()
     while True:
         cliente = login(users)
-        cliente.exibir_informacoes()
+        if cliente != False:
+            if users[0]['id'] == cliente.id:
+                logged(cliente)
         
 if __name__=="__main__":
     main()

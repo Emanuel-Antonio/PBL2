@@ -1,10 +1,58 @@
 class Client:
     def __init__(self, nome, idade, password, id, saldo=0.0):
-        self.nome = nome
-        self.idade = idade
-        self.password = password
-        self.saldo = saldo
-        self.id = id
+        self._nome = nome
+        self._idade = idade
+        self._password = password
+        self._id = id
+        self._saldo = saldo
+
+    # Getter e Setter para nome
+    @property
+    def nome(self):
+        return self._nome
+    
+    @nome.setter
+    def nome(self, value):
+        self._nome = value
+
+    # Getter e Setter para idade
+    @property
+    def idade(self):
+        return self._idade
+    
+    @idade.setter
+    def idade(self, value):
+        self._idade = value
+
+    # Getter e Setter para password
+    @property
+    def password(self):
+        return self._password
+    
+    @password.setter
+    def password(self, value):
+        self._password = value
+
+    # Getter e Setter para id
+    @property
+    def id(self):
+        return self._id
+    
+    @id.setter
+    def id(self, value):
+        self._id = value
+
+    # Getter e Setter para saldo
+    @property
+    def saldo(self):
+        return self._saldo
+    
+    @saldo.setter
+    def saldo(self, value):
+        if value >= 0:
+            self._saldo = value
+        else:
+            print('O saldo não pode ser negativo.')
 
     def depositar(self, quantia):
         if quantia > 0:
