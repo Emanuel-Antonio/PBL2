@@ -4,7 +4,6 @@ import requests
 import json
 import random
 
-#bank = os.getenv("bank")
 bank = "192.168.1.105"
 
 #bank = os.getenv("bank")

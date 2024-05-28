@@ -5,7 +5,6 @@ import json
 import time
 import requests
 
-#bank = os.getenv("bank")
 #bank = "172.16.103.14"
 
 #bank = os.getenv("bank")
