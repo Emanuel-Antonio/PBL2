@@ -24,14 +24,12 @@ def request():
                 if len(consumed_message) > 0: 
                     print(consumed_message[0]) 
                     valor = getUsers(consumed_message[0]['destino'])
-                    if consumed_message[0]['tipo'] == 'deposito':
+                    if consumed_message[0]['tipo'] == 'deposito' or consumed_message[0]['tipo'] == 'transferencia':
                         valor = valor['saldo'] + consumed_message[0]['valor']
                         updateUser(valor, consumed_message[0]['destino'])
-                        print(valor)
-                    elif consumed_message[0]['tipo'] == 'saque':
+                    elif consumed_message[0]['tipo'] == 'saque' :
                         valor = valor['saldo'] - consumed_message[0]['valor']
                         updateUser(valor, consumed_message[0]['destino'])
-                        print(valor)
                     requestRemove(consumed_message[0]['destino'])
         except Exception as e:
             print('Erro ao enviar/receber dados para/de API:', e)

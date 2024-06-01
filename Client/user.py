@@ -102,7 +102,7 @@ def logged(cliente):
             cod = input("Digite o código da conta: ")
             senha = input("Digite a senha para confirmar: ")
             if (senha == cliente.password):
-                requestTransferencia(cod, valor)
+                requestTransferencia(cod, cliente, valor)
             else:
                 print('Operação invalidada!')#senha errada
         elif opcao == 4:
@@ -152,14 +152,14 @@ def requestDeposito(valor, cliente):
     except Exception as e:
         print('Não foi possível estabelecer uma conexão com o Bank ...')
     
-def requestTransferencia():
+def requestTransferencia(cod, cliente, valor):
     # desenvolver depois
     global bank
-    url_publish = f'http://{bank}:8088/requests'
+    url_publish = f'http://{bank[:10] + str(cod[:3])}:8088/requests'
 
     try:
         # Preparar os dados para publicar na API
-        payload = {'destino': '', 'origem': ''}  # Supondo que data_udp é uma sequência de bytes
+        payload = {'destino': int(cod), 'valor': valor, 'tipo': 'transferencia', 'origem': cliente.id}  # Supondo que data_udp é uma sequência de bytes
         json_payload = json.dumps(payload)  # Convertendo para JSON
         headers = {'Content-Type': 'application/json'}
 
@@ -173,7 +173,7 @@ def requestTransferencia():
             print("Erro ao enviar os dados UDP para a API:", response_publish.status_code)
             return
     except Exception as e:
-        print('Não foi possível estabelecer uma conexão com o Broker ...')
+        print(f'Não foi possível estabelecer uma conexão com o Broker ... {e}')
 
 def main():
     users = []
