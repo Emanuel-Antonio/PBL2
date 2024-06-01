@@ -110,7 +110,7 @@ def logged(cliente):
 
 def requestSaque(valor, cliente):
     global bank
-    url_publish = f'http://{bank}:8088/requests'
+    url_publish = f'http://{bank}:8088/saque'
 
     try:
         # Preparar os dados para publicar na API
@@ -122,7 +122,7 @@ def requestSaque(valor, cliente):
         response_publish = requests.post(url_publish, data=json_payload, timeout=2, headers=headers)
 
         # Verificar se a publicação foi bem-sucedida
-        if response_publish.status_code == 201:
+        if response_publish.status_code == 204:
             pass
         else:
             print("Erro ao enviar os dados UDP para a API:", response_publish.status_code)
@@ -132,7 +132,7 @@ def requestSaque(valor, cliente):
     
 def requestDeposito(valor, cliente):
     global bank
-    url_publish = f'http://{bank}:8088/requests'
+    url_publish = f'http://{bank}:8088/deposito'
 
     try:
         # Preparar os dados para publicar na API
@@ -144,7 +144,7 @@ def requestDeposito(valor, cliente):
         response_publish = requests.post(url_publish, data=json_payload, timeout=2, headers=headers)
 
         # Verificar se a publicação foi bem-sucedida
-        if response_publish.status_code == 201:
+        if response_publish.status_code == 204:
             print('Operação efetuada com sucesso!')
         else:
             print("Erro ao enviar a requisição para a API:", response_publish.status_code)
@@ -155,7 +155,7 @@ def requestDeposito(valor, cliente):
 def requestTransferencia(cod, cliente, valor):
     # desenvolver depois
     global bank
-    url_publish = f'http://{bank[:10] + str(cod[:3])}:8088/requests'
+    url_publish = f'http://{bank[:10] + str(cod[:3])}:8088/transferencia'
 
     try:
         # Preparar os dados para publicar na API
@@ -167,10 +167,12 @@ def requestTransferencia(cod, cliente, valor):
         response_publish = requests.post(url_publish, data=json_payload, timeout=2, headers=headers)
 
         # Verificar se a publicação foi bem-sucedida
-        if response_publish.status_code == 201:
+        if response_publish.status_code == 204:
             pass
         else:
-            print("Erro ao enviar os dados UDP para a API:", response_publish.status_code)
+            response_json = response_publish.json()
+            error_message = response_json.get('error', 'Unknown error')
+            print("Erro ao enviar os dados UDP para a API:", error_message)
             return
     except Exception as e:
         print(f'Não foi possível estabelecer uma conexão com o Broker ... {e}')
