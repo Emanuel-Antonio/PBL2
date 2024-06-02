@@ -25,7 +25,7 @@ def get_deposito():
         if item['id'] == data['destino']:
             item['saldo'] = item['saldo'] + data['valor']
     if not data:
-        return jsonify({"error": "No JSON data provided"}), 400
+        return jsonify({"message": "No JSON data provided"}), 400
     return '', 204
 
 @app.route('/saque', methods=['POST'])
@@ -33,15 +33,25 @@ def get_saque():
     data = request.get_json()
     for item in users:
         if item['id'] == data['destino']:
+            if item['saldo'] < data['valor']:
+                return jsonify({"message": "Saldo insuficiente para realizar essa operacao"}), 404
             item['saldo'] = item['saldo'] - data['valor']
     if not data:
-        return jsonify({"error": "No JSON data provided"}), 400
+        return jsonify({"message": "No JSON data provided"}), 400
     return '', 204
 
 @app.route('/transferencia', methods=['POST'])
 def get_transferencia():
     data = request.get_json()
     url_publish = f'http://{bank[:10] + str(data['destino'])[:3]}:8088/receber'
+
+    #Arrumar depois!!!!!!!!!!
+
+    #for itens in users:
+        #if itens['id'] == data['origem']:
+            #if data['valor'] > itens['saldo']:
+                #return jsonify({"message": "Saldo insuficiente para realizar a operacao"}), 404
+            
     try:
         payload = {'destino': data['destino'], 'valor': data['valor'], 'tipo': 'transferencia', 'origem': data['origem']}  
         json_payload = json.dumps(payload)  
@@ -52,14 +62,13 @@ def get_transferencia():
         if response_publish.status_code == 204:
             for itens in users:
                 if itens['id'] == data['origem']:
-                    print(data['valor'])
                     itens['saldo'] = itens['saldo'] - data['valor']
             return '', 204
         else:
             response_json = response_publish.json()
             error_message = response_json.get('error', 'Unknown error')
-            print("Erro ao enviar os dados UDP para a API:", error_message)
-            return '', 404
+            #print("Erro ao enviar os dados UDP para a API:", error_message)
+            return jsonify({"message": "{}".format(error_message)}), 404 #mexer
     except Exception as e:
         print(f'Não foi possível estabelecer uma conexão com o Broker ... {e}')
 
@@ -72,9 +81,9 @@ def get_receber():
             item['saldo'] = item['saldo'] + data['valor']
             i = 1
     if i == 0:
-        return jsonify({"error": "Conta inexistente"}), 404
+        return jsonify({"message": "Conta inexistente"}), 404
     if not data:
-        return jsonify({"error": "No JSON data provided"}), 400
+        return jsonify({"message": "No JSON data provided"}), 400
     return '', 204
 
 # Rota para obter um usuário por ID

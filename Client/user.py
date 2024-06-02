@@ -23,7 +23,7 @@ def login(users):
         opcao = int(input("==>"))
         print("------------------------------")
     if opcao == 1:
-        cod = input("Digite o código da conta\n==>\n")
+        cod = int(input("Digite o código da conta\n==>\n"))
         password = input("Digite a senha\n==>\n")
         for user in users:
             if (cod == user['id']) and (password == user['senha']):
@@ -125,7 +125,9 @@ def requestSaque(valor, cliente):
         if response_publish.status_code == 204:
             pass
         else:
-            print("Erro ao enviar os dados UDP para a API:", response_publish.status_code)
+            response_json = response_publish.json()
+            error_message = response_json.get('message', 'Unknown error')
+            print("Erro ao enviar os dados UDP para a API:", error_message)            
             return
     except Exception as e:
         print('Não foi possível estabelecer uma conexão com o Broker ...')
@@ -147,7 +149,9 @@ def requestDeposito(valor, cliente):
         if response_publish.status_code == 204:
             print('Operação efetuada com sucesso!')
         else:
-            print("Erro ao enviar a requisição para a API:", response_publish.status_code)
+            response_json = response_publish.json()
+            error_message = response_json.get('message', 'Unknown error')
+            print("Erro ao enviar os dados UDP para a API:", error_message)
             return
     except Exception as e:
         print('Não foi possível estabelecer uma conexão com o Bank ...')
@@ -171,7 +175,7 @@ def requestTransferencia(cod, cliente, valor):
             pass
         else:
             response_json = response_publish.json()
-            error_message = response_json.get('error', 'Unknown error')
+            error_message = response_json.get('message', 'Unknown error')
             print("Erro ao enviar os dados UDP para a API:", error_message)
             return
     except Exception as e:
@@ -179,9 +183,8 @@ def requestTransferencia(cod, cliente, valor):
 
 def main():
     users = []
-    users = getUsers()
     while True:
-        cliente = login(users)
+        cliente = login(getUsers())
         if cliente != False:
             logged(cliente)
         
