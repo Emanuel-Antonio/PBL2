@@ -23,7 +23,7 @@ def get_users():
         return jsonify(users)
 
 @app.route('/deposito', methods=['POST'])
-def post_deposito():
+def set_deposito():
     data = request.get_json()
     if not data:
         return jsonify({"message": "No JSON data provided"}), 400
@@ -36,7 +36,7 @@ def post_deposito():
     return jsonify({"message": "Conta não encontrada"}), 404
 
 @app.route('/saque', methods=['POST'])
-def post_saque():
+def set_saque():
     data = request.get_json()
     if not data:
         return jsonify({"message": "No JSON data provided"}), 400
@@ -51,7 +51,7 @@ def post_saque():
     return jsonify({"message": "Conta não encontrada"}), 404
 
 @app.route('/transferencia', methods=['POST'])
-def post_transferencia():
+def set_transferencia():
     data = request.get_json()
     if not data:
         return jsonify({"message": "No JSON data provided"}), 400
@@ -95,7 +95,7 @@ def post_transferencia():
         return jsonify({"message": "Erro na conexão com o Broker"}), 500
 
 @app.route('/receber', methods=['POST'])
-def post_receber():
+def set_receber():
     data = request.get_json()
     if not data:
         return jsonify({"message": "No JSON data provided"}), 400
