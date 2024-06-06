@@ -16,107 +16,39 @@ users = []
 # Lock para sincronização
 lock = Lock()
 
-# Rota para listar todos os usuários
+# Rota para listar todos os usuários do Banco
+@app.route('/login', methods=['POST'])
+def set_login():
+    data = request.get_json()
+    user_id = data['id']
+    password = data['password']
+    for item in users:
+        if item['id'] == user_id and item['senha'] == password:
+            return jsonify({'message': 'ok'}), 201
+    return jsonify({'message': 'falha'}), 401
+
+# Rota para listar todos os usuários do Banco
 @app.route('/users', methods=['GET'])
 def get_users():
     with lock:
-        return jsonify(users)
+        users_no_password = [user.copy() for user in users]
+        for user in users_no_password:
+            del user['senha']
+        return jsonify(users_no_password)
 
-@app.route('/deposito', methods=['POST'])
-def set_deposito():
-    data = request.get_json()
-    if not data:
-        return jsonify({"message": "No JSON data provided"}), 400
-
-    with lock:
-        for item in users:
-            if item['id'] == data['destino']:
-                item['saldo'] += data['valor']
-                return '', 204
-    return jsonify({"message": "Conta não encontrada"}), 404
-
-@app.route('/saque', methods=['POST'])
-def set_saque():
-    data = request.get_json()
-    if not data:
-        return jsonify({"message": "No JSON data provided"}), 400
-
-    with lock:
-        for item in users:
-            if item['id'] == data['destino']:
-                if item['saldo'] < data['valor']:
-                    return jsonify({"message": "Saldo insuficiente para realizar essa operação"}), 404
-                item['saldo'] -= data['valor']
-                return '', 204
-    return jsonify({"message": "Conta não encontrada"}), 404
-
-@app.route('/transferencia', methods=['POST'])
-def set_transferencia():
-    data = request.get_json()
-    if not data:
-        return jsonify({"message": "No JSON data provided"}), 400
-
-    url_publish = f'http://{bank[:10] + str(data["destino"])[:3]}:8088/receber'
-    
-    with lock:
-        user_origem = next((item for item in users if item['id'] == data['origem']), None)
-        if not user_origem or data['valor'] > user_origem['saldo']:
-            return jsonify({"message": "Saldo insuficiente para realizar a operação"}), 404
-        user_origem['saldo'] -= data['valor']
-
-    try:
-        payload = {
-            'destino': data['destino'],
-            'valor': data['valor'],
-            'tipo': 'transferencia',
-            'origem': data['origem']
-        }  
-        headers = {'Content-Type': 'application/json'}
-        response_publish = requests.post(url_publish, json=payload, timeout=2, headers=headers)
-        
-        if response_publish.status_code == 204:
-            return '', 204
-
-        else:
-            with lock:
-                user_origem['saldo'] += data['valor']
-
-            if response_publish.status_code != 204:
-                return "", 404
-            else:
-                response_json = response_publish.json()
-                error_message = response_json.get('error', 'Unknown error')
-                return jsonify({"message": "{}".format(error_message)}), 404
-
-    except Exception as e:
-        print(f'Não foi possível estabelecer uma conexão com o Broker ... {e}')
-        with lock:
-            user_origem['saldo'] += data['valor']
-        return jsonify({"message": "Erro na conexão com o Broker"}), 500
-
-@app.route('/receber', methods=['POST'])
-def set_receber():
-    data = request.get_json()
-    if not data:
-        return jsonify({"message": "No JSON data provided"}), 400
-
-    with lock:
-        user_destino = next((item for item in users if item['id'] == data['destino']), None)
-        if user_destino:
-            user_destino['saldo'] += data['valor']
-            return '', 204
-    return jsonify({"message": "Conta inexistente"}), 404
-
-# Rota para obter um usuário por ID
+# Rota para obter um usuário por ID no Banco
 @app.route('/users/<int:user_id>', methods=['GET'])
 def get_user(user_id):
     with lock:
-        user = next((user for user in users if user['id'] == user_id), None)
+        users_no_password = [user.copy() for user in users]
+        for user in users_no_password:
+            del user['senha']
+        user = next((user for user in users_no_password if user['id'] == user_id), None)
         if user:
             return jsonify(user)
     return jsonify({'message': 'User não encontrado'}), 404
 
-# Rota para criar um novo usuário
+# Rota para criar um novo usuário no Banco
 @app.route('/users', methods=['POST'])
 def createUser():
     newUser = request.json
@@ -124,9 +56,66 @@ def createUser():
         users.append(newUser)
     return jsonify(newUser), 201
 
+# Rota para adicionar uma nova conta a um usuário existente
+@app.route('/users/<user_id>/accounts', methods=['POST'])
+def add_account(user_id):
+    data = request.get_json()
+    new_account = {
+        "id": data["id"],
+        "saldo": data["saldo"],
+        "tipo": data["tipo"]
+    }
+    with lock:
+        ids = []
+        for item in users:
+            ids.append(item['id'])
+        if int(user_id) not in ids:
+            return jsonify({'message': 'Usuário não encontrado!'}), 404
+        for user in users:
+            if user['id'] == int(user_id):
+                user['contas'].append(new_account)
+        return jsonify({'message': 'Conta adicionada com sucesso!'}), 200
+
+# Rota para listar todos as contas
+@app.route('/users/<int:user_id>/accounts', methods=['GET'])
+def get_accounts(user_id):
+    with lock:
+        for item in users:
+            if item['id'] == user_id:
+                accounts = item['contas']
+                return jsonify(accounts)
+        return '', 404
+
+@app.route('/users/<int:user_id>/accounts/<int:account_id>', methods=['GET'])
+def get_account(user_id, account_id):
+    with lock:
+        user = find_user(user_id)
+        if user:
+            account = find_account(user, account_id)
+            if account:
+                return jsonify(account)
+            return jsonify({'message': 'Conta não encontrada'}), 404
+        return jsonify({'message': 'Cliente não encontrado'}), 404
+
+# Função auxiliar para encontrar uma conta por ID dentro de um cliente
+def find_account(user, account_id):
+    return next((account for account in user['contas'] if account['id'] == account_id), None)
+
+# Função auxiliar para encontrar um cliente por ID
+def find_user(user_id):
+    return next((user for user in users if user['id'] == user_id), None)
+
+# Rota para excluir um usuário
+@app.route('/users/<int:user_id>', methods=['DELETE'])
+def deleteUser(user_id):
+    global users
+    with lock:
+        users = [user for user in users if user['id'] != user_id]
+    return jsonify({'message': 'User excluído com sucesso'})
+
 # Rota para atualizar um usuário existente
-@app.route('/user/<int:user_id>', methods=['PUT'])
-def updateUser(user_id):
+@app.route('/users/<int:user_id>', methods=['PUT'])
+def updateAccount(user_id):
     with lock:
         user = next((user for user in users if user['id'] == user_id), None)
         if not user:
@@ -135,14 +124,6 @@ def updateUser(user_id):
         dataUpdate = request.json
         user.update(dataUpdate)
     return jsonify(user)
-
-# Rota para excluir um usuário
-@app.route('/user/<int:user_id>', methods=['DELETE'])
-def deleteUser(user_id):
-    global users
-    with lock:
-        users = [user for user in users if user['id'] != user_id]
-    return jsonify({'message': 'User excluído com sucesso'})
 
 if __name__ == "__main__":
     # Inicia a aplicação Flask
