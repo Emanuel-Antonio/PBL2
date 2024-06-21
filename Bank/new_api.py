@@ -3,6 +3,7 @@ import requests
 import json
 import os
 from threading import Lock
+import time
 
 app = Flask(__name__)
 
@@ -16,6 +17,8 @@ users = []
 # Lock para sincronização
 lock = Lock()
 
+transfers = []
+    
 # Rota para verificar login todos os usuários do Banco
 @app.route('/login', methods=['POST'])
 def set_login():
@@ -207,7 +210,19 @@ def abort_transactions(transactions):
             response = requests.post(url, json=trans)
             while response.status_code != 201:
                 response = requests.post(url, json=trans)    
-        
+
+@app.route('/transfers', methods=['POST'])
+def receiveTransfers():
+    try:
+        data = request.get_json()
+        if data is None:
+            raise ValueError("Nenhum dado JSON fornecido")
+
+        transfers.append(data)
+        return jsonify({"message": "ok"}), 201
+    except Exception as e:
+        return jsonify({"message": "erro"}), 401
+
 # Rota para tranferir
 @app.route('/transfer', methods=['POST'])
 def transfer():
