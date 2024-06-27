@@ -4,6 +4,7 @@ import json
 import os
 from threading import Lock
 import time
+import threading
 
 app = Flask(__name__)
 
@@ -18,6 +19,94 @@ users = []
 lock = Lock()
 
 transfers = []
+
+########################################################## Token ####################################################
+
+# Estado do nó
+node_state = {
+    "node_id": 1,  # Atualize para o ID do nó específico
+    "node_urls": ["http://192.168.1.104:8081", "http://192.168.1.103:8081"],  # Lista de URLs dos nós
+    "current_index": 0,  # Índice do nó atual na lista
+    "has_token": False,
+    "last_token_time": time.time(),
+    "token_timeout": 30,  # Tempo máximo que o nó pode ficar sem token (em segundos)
+    "token_check_interval": 1,  # Intervalo de checagem (em segundos)
+    "token_sequence": 0,
+    "pass": False
+}
+
+def pass_token():
+    global node_state
+    initial_index = node_state["current_index"]
+    while True:  
+        if node_state["has_token"] and node_state["pass"]:
+            initial_index +=1
+            initial_index = initial_index % len(node_state["node_urls"])
+            next_node_url = initial_index
+            print(f"Tentando passar o token para: {node_state["node_urls"][next_node_url]}")
+            time.sleep(2)      
+            try:
+                response = requests.post(f"{node_state["node_urls"][next_node_url]}/receive_token",json={"Token sequence": node_state['token_sequence']+1}, timeout=5)
+                if response.status_code == 200:
+                    print(f"Token passado para o próximo nó: {next_node_url}")
+                    node_state["last_token_time"] = time.time()
+                    if node_state["node_urls"][next_node_url] != node_state["node_urls"][node_state["current_index"]]:
+                        node_state["has_token"] = False
+                        node_state["pass"] = False
+                        initial_index = node_state["current_index"] + 1
+                else:
+                    print(f"Falha ao passar o token para {next_node_url}: {response.status_code}")
+            except requests.exceptions.RequestException as e:
+                print(f"Erro ao passar o token para {next_node_url}: {e}")
+            
+            # Tentar o próximo nó na lista
+            print((node_state["current_index"] + 1) % len(node_state["node_urls"]))
+            #node_state["current_index"] = (node_state["current_index"] + 1) % len(node_state["node_urls"])
+            
+            # Se voltar ao nó inicial, significa que todos os nós foram tentados
+            if node_state["current_index"] == initial_index:
+                print("Falha ao passar o token para todos os nós. Reiniciando tentativa.")
+
+        else:
+            time.sleep(1)
+            print("Não é possível passar o token: O nó não possui o token.")
+
+def receive_token():
+    global node_state, transfers
+    print("recebi")
+    node_state["has_token"] = True
+    node_state["last_token_time"] = time.time()
+    print(f"Token recebido pelo nó {node_state['node_id']}")
+    print(f"Token recebido com sequencia {node_state['token_sequence']}")
+    # aqui eu chamo quem vai realizar a transação
+    try:
+        print(transfers)
+        ok = transfer(transfers[0])
+        print(ok)
+        del transfers[0]
+        print(transfers)
+    except Exception as e:
+        pass
+    node_state["pass"] = True
+
+def check_token():
+    while True:
+        time.sleep(node_state["token_check_interval"])
+        if not node_state["has_token"] and ((time.time() - node_state["last_token_time"]) > node_state["token_timeout"]):
+            print(f"O nó {node_state['node_id']} está sem o token por muito tempo. Gerando um novo token.")
+            receive_token()  # Para fins deste exemplo, simplesmente regeneramos o token
+
+# Rota para receber o token
+@app.route('/receive_token', methods=['POST'])
+def receive_token_route():
+    global node_state
+    token_sequence = request.get_json()
+    if token_sequence["Token sequence"] > node_state["token_sequence"]:
+        node_state["token_sequence"] = token_sequence['Token sequence']
+        receive_token()
+    return jsonify({"message": "Token recebido"}), 200
+
+########################################################## Token ####################################################
     
 # Rota para verificar login todos os usuários do Banco
 @app.route('/login', methods=['POST'])
@@ -206,7 +295,7 @@ def recipient():
 def abort_transactions(transactions):
     for trans in transactions:
         if trans['status'] == 'commit':
-            url = f'http://{bank[:10] + str(trans["id"])[:3]}:8088/abort'
+            url = f'http://{bank[:10] + str(trans["id"])[:3]}:8081/abort'
             response = requests.post(url, json=trans)
             while response.status_code != 201:
                 response = requests.post(url, json=trans)    
@@ -217,27 +306,24 @@ def receiveTransfers():
         data = request.get_json()
         if data is None:
             raise ValueError("Nenhum dado JSON fornecido")
-
         transfers.append(data)
         return jsonify({"message": "ok"}), 201
     except Exception as e:
         return jsonify({"message": "erro"}), 401
 
-# Rota para tranferir
-@app.route('/transfer', methods=['POST'])
-def transfer():
-    transations = request.get_json()
+def transfer(transations):
     trans_destiny = []
     trans_origin = []
+    print(transations)
     for transation in transations:
-        url_destiny = f'http://{bank[:10] + str(transation["id_destiny"])[:3]}:8088/sender'
+        url_destiny = f'http://{bank[:10] + str(transation["id_destiny"])[:3]}:8081/sender'
         try: 
-            url_origin = f'http://{bank[:10] + str(transation["id_origin"])[:3]}:8088/recipient'
+            url_origin = f'http://{bank[:10] + str(transation["id_origin"])[:3]}:8081/recipient'
             response = requests.post(url_origin, json=transation, timeout=1)
             if response.status_code != 201:
                 abort_transactions(trans_destiny)
                 abort_transactions(trans_origin)
-                return jsonify({'message': 'Transação cancelada'}), 401
+                return False
             else:
                 transation2 = {
                     'id': transation['id_origin'],
@@ -254,16 +340,38 @@ def transfer():
                 if response.status_code != 201:
                     abort_transactions(trans_destiny)
                     abort_transactions(trans_origin)
-                    return jsonify({'message': 'Transação cancelada'}), 401 
+                    return False 
                 else:
                     transation1['status'] = 'commit'
                     trans_destiny.append(transation1)
         except Exception as e:
             abort_transactions(trans_destiny)
             abort_transactions(trans_origin)
-            return jsonify({'message': 'Transação cancelada'}), 401 
-    return jsonify({'message': 'Transação concluida'}), 201 
+            return False
+    return True
 
-if __name__ == "__main__":
-    # Inicia a aplicação Flask
-    app.run(host='0.0.0.0', port=8088, debug=True)
+# Função para iniciar o servidor Flask
+def iniciar_servidor_flask():
+    app.run(host='0.0.0.0', port=8081)
+
+def main():
+    
+    # Inicia o servidor Flask em uma nova thread
+    thread_servidor_flask = threading.Thread(target=iniciar_servidor_flask)
+    thread_servidor_flask.start()
+    
+    # Inicializa o nó com o token (apenas para o primeiro nó na rede)
+    if node_state["node_id"] == 1:
+        receive_token()
+        node_state["pass"] == True
+    
+    # Inicializa a thread que verifica e gera o token periodicamente
+    token_thread_pass = threading.Thread(target=pass_token)
+    token_thread_pass.start()
+    
+    # Inicializa a thread que verifica e gera o token periodicamente
+    token_thread = threading.Thread(target=check_token)
+    token_thread.start()
+
+if __name__ == '__main__':
+    main()

@@ -8,21 +8,24 @@ app = Flask(__name__)
 # Estado do nó
 node_state = {
     "node_id": 1,  # Atualize para o ID do nó específico
-    "node_urls": ["http://192.168.1.105:5000", "http://192.168.1.106:5000"],  # Lista de URLs dos nós
+    "node_urls": ["http://192.168.1.104:5000", "http://192.168.1.103:5000"],  # Lista de URLs dos nós
     "current_index": 0,  # Índice do nó atual na lista
     "has_token": False,
     "last_token_time": time.time(),
     "token_timeout": 30,  # Tempo máximo que o nó pode ficar sem token (em segundos)
     "token_check_interval": 1,  # Intervalo de checagem (em segundos)
-    "token_sequence": 0
+    "token_sequence": 0,
+    "pass": False
 }
 
 def pass_token():
     global node_state
     initial_index = node_state["current_index"]
     while True:  
-        if node_state["has_token"]:
-            next_node_url = (node_state["current_index"] + 1) % len(node_state["node_urls"])
+        if node_state["has_token"] and node_state["pass"]:
+            initial_index +=1
+            initial_index = initial_index % len(node_state["node_urls"])
+            next_node_url = initial_index
             print(f"Tentando passar o token para: {node_state["node_urls"][next_node_url]}")
             time.sleep(2)      
             try:
@@ -30,8 +33,10 @@ def pass_token():
                 if response.status_code == 200:
                     print(f"Token passado para o próximo nó: {next_node_url}")
                     node_state["last_token_time"] = time.time()
-                    if next_node_url != node_state["node_urls"][initial_index]:
+                    if node_state["node_urls"][next_node_url] != node_state["node_urls"][node_state["current_index"]]:
                         node_state["has_token"] = False
+                        node_state["pass"] = False
+                        initial_index = node_state["current_index"] + 1
                 else:
                     print(f"Falha ao passar o token para {next_node_url}: {response.status_code}")
             except requests.exceptions.RequestException as e:
@@ -56,12 +61,14 @@ def receive_token():
     node_state["last_token_time"] = time.time()
     print(f"Token recebido pelo nó {node_state['node_id']}")
     print(f"Token recebido com sequencia {node_state['token_sequence']}")
+    # aqui eu chamo quem vai realizar a transação
+    node_state["pass"] = True
 
 
 def check_token():
     while True:
         time.sleep(node_state["token_check_interval"])
-        if not node_state["has_token"] and (time.time() - node_state["last_token_time"] > node_state["token_timeout"]):
+        if not node_state["has_token"] and ((time.time() - node_state["last_token_time"]) > node_state["token_timeout"]):
             print(f"O nó {node_state['node_id']} está sem o token por muito tempo. Gerando um novo token.")
             receive_token()  # Para fins deste exemplo, simplesmente regeneramos o token
 
@@ -88,6 +95,7 @@ def main():
     # Inicializa o nó com o token (apenas para o primeiro nó na rede)
     if node_state["node_id"] == 1:
         receive_token()
+        node_state["pass"] == True
     
     # Inicializa a thread que verifica e gera o token periodicamente
     token_thread_pass = threading.Thread(target=pass_token)
