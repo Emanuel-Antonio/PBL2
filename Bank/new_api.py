@@ -1,3 +1,4 @@
+import random
 from flask import Flask, request, jsonify
 import requests
 import json
@@ -11,7 +12,7 @@ app = Flask(__name__)
 # Configurações
 #bank = os.getenv("bank")
 
-bank = "192.168.1.105"
+bank = "192.168.1.104"
 
 # Lista de usuários
 users = []
@@ -19,6 +20,26 @@ users = []
 lock = Lock()
 
 transfers = []
+finalizedTransfers = []
+idtransfers = []
+
+# Rota para verificar login todos os usuários do Banco
+@app.route('/id', methods=['GET'])
+def get_id():
+    id = random.randint(100000, 999999)
+    while id in idtransfers:
+        id = random.randint(100000, 999999)
+    idtransfers.append(id)
+    return jsonify(id)
+
+# Rota para verificar login todos os usuários do Banco
+@app.route('/status', methods=['GET'])
+def get_status():
+    id = request.get_json()
+    for item in finalizedTransfers:
+        if item[0] == str(id):
+            return jsonify(item[1])
+    return jsonify(False)
 
 ########################################################## Token ####################################################
 
@@ -32,7 +53,8 @@ node_state = {
     "token_timeout": 30,  # Tempo máximo que o nó pode ficar sem token (em segundos)
     "token_check_interval": 1,  # Intervalo de checagem (em segundos)
     "token_sequence": 0,
-    "pass": False
+    "pass": False,
+    "exec": False
 }
 
 def pass_token():
@@ -44,18 +66,17 @@ def pass_token():
             initial_index = initial_index % len(node_state["node_urls"])
             next_node_url = initial_index
             print(f"Tentando passar o token para: {node_state["node_urls"][next_node_url]}")
-            time.sleep(2)      
             try:
-                response = requests.post(f"{node_state["node_urls"][next_node_url]}/receive_token",json={"Token sequence": node_state['token_sequence']+1}, timeout=5)
-                if response.status_code == 200:
-                    print(f"Token passado para o próximo nó: {next_node_url}")
-                    node_state["last_token_time"] = time.time()
-                    if node_state["node_urls"][next_node_url] != node_state["node_urls"][node_state["current_index"]]:
+                if node_state["node_urls"][next_node_url] != node_state["node_urls"][node_state["current_index"]]:
+                    response = requests.post(f"{node_state["node_urls"][next_node_url]}/receive_token",json={"Token sequence": node_state['token_sequence']+1}, timeout=2)
+                    if response.status_code == 200:
+                        print(f"Token passado para o próximo nó: {next_node_url}")
+                        node_state["last_token_time"] = time.time()
                         node_state["has_token"] = False
                         node_state["pass"] = False
                         initial_index = node_state["current_index"] + 1
-                else:
-                    print(f"Falha ao passar o token para {next_node_url}: {response.status_code}")
+                    else:
+                        print(f"Falha ao passar o token para {next_node_url}: {response.status_code}")
             except requests.exceptions.RequestException as e:
                 print(f"Erro ao passar o token para {next_node_url}: {e}")
             
@@ -68,25 +89,31 @@ def pass_token():
                 print("Falha ao passar o token para todos os nós. Reiniciando tentativa.")
 
         else:
-            time.sleep(1)
+            time.sleep(2)
             print("Não é possível passar o token: O nó não possui o token.")
 
 def receive_token():
-    global node_state, transfers
+    global node_state, transfers, finalizedTransfers
     print("recebi")
     node_state["has_token"] = True
     node_state["last_token_time"] = time.time()
     print(f"Token recebido pelo nó {node_state['node_id']}")
     print(f"Token recebido com sequencia {node_state['token_sequence']}")
-    # aqui eu chamo quem vai realizar a transação
-    try:
-        print(transfers)
-        ok = transfer(transfers[0])
-        print(ok)
-        del transfers[0]
-        print(transfers)
-    except Exception as e:
-        pass
+    if node_state["exec"] == True:
+        try:
+            print(transfers)
+            ok = transfer(transfers[0])
+            print(ok)
+            for i in range(len(finalizedTransfers)):
+                if finalizedTransfers[i][1]=='':
+                    print(finalizedTransfers[i][1])
+                    finalizedTransfers[i][1] = ok
+                    break
+            del transfers[0]
+            print(transfers)  
+            print(finalizedTransfers)
+        except Exception as e:
+            pass
     node_state["pass"] = True
 
 def check_token():
@@ -94,6 +121,8 @@ def check_token():
         time.sleep(node_state["token_check_interval"])
         if not node_state["has_token"] and ((time.time() - node_state["last_token_time"]) > node_state["token_timeout"]):
             print(f"O nó {node_state['node_id']} está sem o token por muito tempo. Gerando um novo token.")
+            node_state["exec"] = False
+            node_state["token_sequence"] = node_state['token_sequence'] + len(node_state["node_urls"])
             receive_token()  # Para fins deste exemplo, simplesmente regeneramos o token
 
 # Rota para receber o token
@@ -103,6 +132,7 @@ def receive_token_route():
     token_sequence = request.get_json()
     if token_sequence["Token sequence"] > node_state["token_sequence"]:
         node_state["token_sequence"] = token_sequence['Token sequence']
+        node_state["exec"] = True
         receive_token()
     return jsonify({"message": "Token recebido"}), 200
 
@@ -306,7 +336,13 @@ def receiveTransfers():
         data = request.get_json()
         if data is None:
             raise ValueError("Nenhum dado JSON fornecido")
-        transfers.append(data)
+        # Obtendo a primeira chave do dicionário
+        primeira_chave = next(iter(data))
+
+        # Obtendo o valor associado à primeira chave
+        valor_primeira_chave = data[primeira_chave]
+        transfers.append(valor_primeira_chave)
+        finalizedTransfers.append([primeira_chave,""])
         return jsonify({"message": "ok"}), 201
     except Exception as e:
         return jsonify({"message": "erro"}), 401
@@ -352,7 +388,7 @@ def transfer(transations):
 
 # Função para iniciar o servidor Flask
 def iniciar_servidor_flask():
-    app.run(host='0.0.0.0', port=8081)
+    app.run(host='0.0.0.0', port=8081, threaded=True)
 
 def main():
     
