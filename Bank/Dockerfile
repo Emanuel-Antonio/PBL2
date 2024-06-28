@@ -6,8 +6,7 @@ WORKDIR /app
 
 #Copie o arquivo requirements.txt para a imagem
 COPY requirements.txt .
-COPY bank.py .
-COPY api.py .
+COPY new_api.py .
 
 #Instale as bibliotecas Python listadas no arquivo requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
@@ -16,4 +15,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 ENV bank 192.168.1.100
 
 #Comando para iniciar o aplicativo
-CMD ["python", "bank.py"]
+CMD ["python", "new-api.py"]
