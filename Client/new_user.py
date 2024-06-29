@@ -2,7 +2,7 @@ import os
 import requests
 import json
 import random
-bank = "192.168.1.105"
+bank = "192.168.1.104"
 
 #bank = os.getenv("bank")
 #bank = "172.16.103.14"
@@ -23,7 +23,7 @@ def login(users):
     if opcao == 1:
         cod = input("Digite o código da conta\n==>\n")
         password = input("Digite a senha\n==>\n")
-        verificarLogin(int(cod), password)
+        verificarLogin(cod, password)
         return getUser(cod)
     else:
         name = input("Seu nome: ")
@@ -32,7 +32,7 @@ def login(users):
         id = input("Digite seu Id")
         tipo = input('Digite o tipo de conta')
         createAccount(id, name, age, password, tipo)
-        return Client(name, age, password, id, 0)
+        return [id, name, age, password, tipo]
                 
 def createAccount(id, name, age, password, tipo):
     global bank
@@ -64,12 +64,12 @@ def createAccount(id, name, age, password, tipo):
         
 def verificarLogin(id, password):
     global bank
-    url_publish = f"http://{bank}:8088/users"
+    url_publish = f"http://{bank}:8088/login"
     try:
         # Preparar os dados para publicar na API
         payload = {
-            'id': id,
-            'senha': password,
+            'id': str(id),
+            'password': str(password),
         }
         json_payload = json.dumps(payload)  # Convertendo para JSON
         headers = {'Content-Type': 'application/json'}
@@ -78,11 +78,11 @@ def verificarLogin(id, password):
         response_publish = requests.post(url_publish, data=json_payload, timeout=2, headers=headers)
 
         # Verificar se a publicação foi bem-sucedida
-        if response_publish.status_code == 201:
-            print("Login efetuado com sucesso!")
-        else:
+        if response_publish.status_code != 201:
             print("Erro ao enviar os dados UDP para a API:", response_publish.status_code)
             print("Resposta da API:", response_publish.text)
+        else:
+            print("Login efetuado com sucesso!")
     except Exception as e:
         print("Erro:", e)
         print('Não foi possível estabelecer uma conexão com o bank ...')
@@ -138,23 +138,30 @@ def getUser(id):
 def logged(user):
     while True:
         print(user)
+        try:
+            print(f"==============================================================\nTitular: {user['nome']}\nSaldo: {user['contas'][0]['saldo']}\nChave Pix: {user['id']}")
+        except Exception as e:
+            print(f"==============================================================\nTitular: {user[1]}\nSaldo: 0\nChave Pix: {user[0]}")
+        print("=============================menu=============================\n1 - Para Depositar; 2 - Para Sacar e 3 Para realizar transação\n==============================================================")
         opcao = int(input("==> "))
         if opcao == 1:
-            print('')
+            valor = float(input("Digite o valor a Depositar: "))
+            requestDeposito(valor, user['id'])
         elif opcao == 2:
-            print('')
+            valor = float(input("Digite o valor a Sacar: "))
+            requestSaque(valor, user['id'])
         elif opcao == 3:
             print('')
         elif opcao == 4:
             break
 
-def requestSaque(valor, cliente):
+def requestSaque(valor, id):
     global bank
-    url_publish = f'http://{bank}:8088/saque'
+    url_publish = f'http://{bank}:8088/users/{id}/accounts/{id[:3]}/take'
 
     try:
         # Preparar os dados para publicar na API
-        payload = {'destino': cliente.id, 'valor': valor, 'tipo': 'saque'}  # Supondo que data_udp é uma sequência de bytes
+        payload = {'value': valor}  # Supondo que data_udp é uma sequência de bytes
         json_payload = json.dumps(payload)  # Convertendo para JSON
         headers = {'Content-Type': 'application/json'}
 
@@ -162,7 +169,7 @@ def requestSaque(valor, cliente):
         response_publish = requests.post(url_publish, data=json_payload, timeout=2, headers=headers)
 
         # Verificar se a publicação foi bem-sucedida
-        if response_publish.status_code == 204:
+        if response_publish.status_code == 201:
             pass
         else:
             response_json = response_publish.json()
@@ -170,15 +177,15 @@ def requestSaque(valor, cliente):
             print("Erro ao enviar os dados UDP para a API:", error_message)            
             return
     except Exception as e:
-        print('Não foi possível estabelecer uma conexão com o Broker ...')
+        print('Não foi possível estabelecer uma conexão com o Bank ...')
     
-def requestDeposito(valor, cliente):
+def requestDeposito(valor, id):
     global bank
-    url_publish = f'http://{bank}:8088/deposito'
-
+    url_publish = f'http://{bank}:8088/users/{id}/accounts/{id[:3]}/deposit'
+    print(url_publish)
     try:
         # Preparar os dados para publicar na API
-        payload = {'destino': cliente.id, 'valor': valor, 'tipo': 'deposito'}  # Supondo que data_udp é uma sequência de bytes
+        payload = {'value': valor}  # Supondo que data_udp é uma sequência de bytes
         json_payload = json.dumps(payload)  # Convertendo para JSON
         headers = {'Content-Type': 'application/json'}
 
@@ -186,7 +193,7 @@ def requestDeposito(valor, cliente):
         response_publish = requests.post(url_publish, data=json_payload, timeout=2, headers=headers)
 
         # Verificar se a publicação foi bem-sucedida
-        if response_publish.status_code == 204:
+        if response_publish.status_code == 201:
             print('Operação efetuada com sucesso!')
         else:
             response_json = response_publish.json()
@@ -224,7 +231,7 @@ def requestTransferencia(cod, cliente, valor):
 def main():
     while True:
         user = login(getUsers())
-        if user != False:
+        if user != None:
             logged(user)
         
 if __name__=="__main__":

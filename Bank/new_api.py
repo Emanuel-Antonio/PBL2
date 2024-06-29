@@ -46,7 +46,7 @@ def get_status():
 # Estado do nó
 node_state = {
     "node_id": 1,  # Atualize para o ID do nó específico
-    "node_urls": ["http://192.168.1.104:8081", "http://192.168.1.103:8081"],  # Lista de URLs dos nós
+    "node_urls": ["http://192.168.1.104:8088", "http://192.168.1.103:8088"],  # Lista de URLs dos nós --> Mudar no Laboratório
     "current_index": 0,  # Índice do nó atual na lista
     "has_token": False,
     "last_token_time": time.time(),
@@ -144,6 +144,7 @@ def set_login():
     data = request.get_json()
     user_id = data['id']
     password = data['password']
+    print(data)
     for item in users:
         if item['id'] == user_id and item['senha'] == password:
             return jsonify({'message': 'ok'}), 201
@@ -163,11 +164,12 @@ def get_users():
 def get_user(user_id):
     with lock:
         users_no_password = [user.copy() for user in users]
+        print(users_no_password)
         for user in users_no_password:
-            del user['senha']
-        user = next((user for user in users_no_password if user['id'] == user_id), None)
-        if user:
-            return jsonify(user)
+            print(user, "a")
+            if user['id'] == str(user_id):
+                del user['senha']
+                return jsonify(user)
     return jsonify({'message': 'User não encontrado'}), 401
 
 # Rota para criar um novo usuário no Banco
@@ -225,7 +227,7 @@ def find_account(user, account_id):
 
 # Função auxiliar para encontrar um cliente por ID
 def find_user(user_id):
-    return next((user for user in users if user['id'] == user_id), None)
+    return next((user for user in users if int(user['id']) == user_id), None)
 
 # Rota para excluir um usuário
 @app.route('/users/<int:user_id>', methods=['DELETE'])
@@ -325,7 +327,14 @@ def recipient():
 def abort_transactions(transactions):
     for trans in transactions:
         if trans['status'] == 'commit':
-            url = f'http://{bank[:10] + str(trans["id"])[:3]}:8081/abort'
+            
+            #if len(trans["id"]) == 7:
+            #    url = f'http://{bank[:11] + str(trans["id"])[:1]}:8088/abort'
+            #else:
+            #    url = f'http://{bank[:11] + str(trans["id"])[:2]}:8088/abort'
+            
+            #comentar a linha de baixo no laboratorio e descomentar as de cima
+            url = f'http://{bank[:10] + str(trans["id"])[:3]}:8088/abort'
             response = requests.post(url, json=trans)
             while response.status_code != 201:
                 response = requests.post(url, json=trans)    
@@ -352,9 +361,23 @@ def transfer(transations):
     trans_origin = []
     print(transations)
     for transation in transations:
-        url_destiny = f'http://{bank[:10] + str(transation["id_destiny"])[:3]}:8081/sender'
+        
+        #if len(transation["id_destiny"]) == 7:
+        #    url_destiny = f'http://{bank[:11] + str(transation["id_destiny"])[:1]}:8088/sender'
+        #else:
+        #    url_destiny = f'http://{bank[:11] + str(transation["id_destiny"])[:2]}:8088/sender'
+            
+        #comentar a linha de baixo no laboratorio e descomentar as de cima
+        url_destiny = f'http://{bank[:10] + str(transation["id_destiny"])[:3]}:8088/sender'
         try: 
-            url_origin = f'http://{bank[:10] + str(transation["id_origin"])[:3]}:8081/recipient'
+            
+            #if len(transation["id_origin"]) == 7:
+            #    url_origin = f'http://{bank[:11] + str(transation["id_origin"])[:1]}:8088/sender'
+            #else:
+            #    url_origin = f'http://{bank[:11] + str(transation["id_origin"])[:2]}:8088/sender'
+                
+            #comentar a linha de baixo no laboratorio e descomentar as de cima
+            url_origin = f'http://{bank[:10] + str(transation["id_origin"])[:3]}:8088/recipient'
             response = requests.post(url_origin, json=transation, timeout=1)
             if response.status_code != 201:
                 abort_transactions(trans_destiny)
@@ -388,7 +411,7 @@ def transfer(transations):
 
 # Função para iniciar o servidor Flask
 def iniciar_servidor_flask():
-    app.run(host='0.0.0.0', port=8081, threaded=True)
+    app.run(host='0.0.0.0', port=8088, threaded=True)
 
 def main():
     
