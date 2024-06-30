@@ -136,11 +136,13 @@ def getUser(id):
     return consumed_messsage        
     
 def logged(user):
-    while True:
-        print(user)
+    while True:    
+        getUser()
         try:
+            user = getUser(user['id'])
             print(f"==============================================================\nTitular: {user['nome']}\nSaldo: {user['contas'][0]['saldo']}\nChave Pix: {user['id']}")
-        except Exception as e:
+        except Exception as e:  
+            user = getUser(user[0])
             print(f"==============================================================\nTitular: {user[1]}\nSaldo: 0\nChave Pix: {user[0]}")
         print("=============================menu=============================\n1 - Para Depositar; 2 - Para Sacar e 3 Para realizar transação\n==============================================================")
         opcao = int(input("==> "))
