@@ -32,6 +32,13 @@ def login(users):
         password = input("Sua senha: ")
         id = input("Digite seu Id")
         tipo = input('Digite o tipo de conta')
+        
+        #if len(bank) == 12:
+        #    pix = bank[-1:] + str(getTransId())
+        #else:
+        #    pix = bank[-2:] + str(getTransId())
+            
+        #No laboratório comentar a linha a baixo e descomentar as de cima
         pix = bank[-3:] + str(getTransId())
         createAccount(id, name, age, password, tipo, int(pix))
         return [id, name, age, password, tipo, int(pix)]
@@ -217,9 +224,7 @@ def getTransId():
         if response_publish.status_code == 201:
             return response_publish.json()
         else:
-            response_json = response_publish.json()
-            error_message = response_json.get('message', 'Unknown error')
-            print("Erro ao enviar os dados UDP para a API:", error_message)            
+            return
     except Exception as e:
         print('Não foi possível estabelecer uma conexão com o Bank ...')
         return 
@@ -241,9 +246,6 @@ def requestSaque(valor, id, conta):
         if response_publish.status_code == 201:
             pass
         else:
-            response_json = response_publish.json()
-            error_message = response_json.get('message', 'Unknown error')
-            print("Erro ao enviar os dados UDP para a API:", error_message)            
             return
     except Exception as e:
         print('Não foi possível estabelecer uma conexão com o Bank ...')
@@ -265,15 +267,19 @@ def requestDeposito(valor, id, conta):
         if response_publish.status_code == 201:
             print('Operação efetuada com sucesso!')
         else:
-            response_json = response_publish.json()
-            error_message = response_json.get('message', 'Unknown error')
-            print("Erro ao enviar os dados UDP para a API:", error_message)
             return
     except Exception as e:
         print('Não foi possível estabelecer uma conexão com o Bank ...')
     
 def requestTransferencia(dic, id_origem):
     global bank
+    
+    #if len(id_origem) == 7:
+    #    url_publish = f'http://{bank[:11] + str(id_origem)[:1]}:8088/transfers'
+    #else:
+    #    url_publish = f'http://{bank[:11] + str(id_origem)[:2]}:8088/transfers'
+    
+    #comentar a de baixo e descomentar os de cima ao testar no laboratorio
     url_publish = f'http://{bank[:10] + str(id_origem)[:3]}:8088/transfers'
     try:
         # Preparar os dados para publicar na API
@@ -288,12 +294,9 @@ def requestTransferencia(dic, id_origem):
         if response_publish.status_code == 201:
             pass
         else:
-            response_json = response_publish.json()
-            error_message = response_json.get('message', 'Unknown error')
-            print("Erro ao enviar os dados UDP para a API:", error_message)
             return
     except Exception as e:
-        print(f'Não foi possível estabelecer uma conexão com o Broker ... {e}')
+        print(f'Não foi possível estabelecer uma conexão com o Bank ... {e}')
 
 def main():
     while True:
