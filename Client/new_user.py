@@ -2,6 +2,7 @@ import os
 import requests
 import json
 import random
+import time
 bank = "192.168.1.104"
 
 #bank = os.getenv("bank")
@@ -31,10 +32,11 @@ def login(users):
         password = input("Sua senha: ")
         id = input("Digite seu Id")
         tipo = input('Digite o tipo de conta')
-        createAccount(id, name, age, password, tipo)
-        return [id, name, age, password, tipo]
+        pix = bank[-3:] + str(getTransId())
+        createAccount(id, name, age, password, tipo, int(pix))
+        return [id, name, age, password, tipo, int(pix)]
                 
-def createAccount(id, name, age, password, tipo):
+def createAccount(id, name, age, password, tipo, pix):
     global bank
     url_publish = f"http://{bank}:8088/users"
     try:
@@ -44,7 +46,7 @@ def createAccount(id, name, age, password, tipo):
             'nome': name,
             'idade': age,
             'senha': password,
-            'contas': [{'id': int(bank[10:]), 'saldo': 0, 'tipo': tipo}]
+            'contas': [{'id': pix, 'saldo': 0, 'tipo': tipo}]
         }
         json_payload = json.dumps(payload)  # Convertendo para JSON
         headers = {'Content-Type': 'application/json'}
@@ -137,29 +139,94 @@ def getUser(id):
     
 def logged(user):
     while True:    
-        getUser()
         try:
             user = getUser(user['id'])
             print(f"==============================================================\nTitular: {user['nome']}\nSaldo: {user['contas'][0]['saldo']}\nChave Pix: {user['id']}")
         except Exception as e:  
             user = getUser(user[0])
-            print(f"==============================================================\nTitular: {user[1]}\nSaldo: 0\nChave Pix: {user[0]}")
+            print(f"==============================================================\nTitular: {user['nome']}\nSaldo: {user['contas'][0]['saldo']}\nChave Pix: {user['id']}")
         print("=============================menu=============================\n1 - Para Depositar; 2 - Para Sacar e 3 Para realizar transação\n==============================================================")
         opcao = int(input("==> "))
         if opcao == 1:
             valor = float(input("Digite o valor a Depositar: "))
-            requestDeposito(valor, user['id'])
+            requestDeposito(valor, user['id'], user['contas'][0]['id'])
         elif opcao == 2:
             valor = float(input("Digite o valor a Sacar: "))
-            requestSaque(valor, user['id'])
+            requestSaque(valor, user['id'], user['contas'][0]['id'])
         elif opcao == 3:
-            print('')
+            transacao = {}
+            id = getTransId()
+            transacao[str(id)] = []
+            while True:
+                print("=====================================\n1 Para adicionar micro-transação\n2 Para executar conjunto de transações\n=====================================")
+                opcao = int(input())
+                if opcao == 1:
+                    m = {}
+                    origem = int(input("Digite o id de origem: "))
+                    destino = int(input("Digite o id de destino: "))
+                    value = float(input("Digite o valor: "))
+                    m["id_destiny"] = destino
+                    m["id_origin"] = origem
+                    m["status"] = "init"
+                    m["value"] = value
+                    transacao[str(id)].append(m)
+                    print(transacao)
+                else:
+                    print(user['contas'][0]['id'])
+                    requestTransferencia(transacao, user['contas'][0]['id'])
+                    time.sleep(7)
+                    verStatus(id)
+                    break
         elif opcao == 4:
             break
 
-def requestSaque(valor, id):
+def verStatus(id):
     global bank
-    url_publish = f'http://{bank}:8088/users/{id}/accounts/{id[:3]}/take'
+    url_publish = f'http://{bank}:8088/status'
+
+    try:
+        
+        # Preparar os dados para publicar na API
+        payload = {'id': id}  # Supondo que data_udp é uma sequência de bytes
+        json_payload = json.dumps(payload)  # Convertendo para JSON
+        headers = {'Content-Type': 'application/json'}
+        # Publicar na API
+        response_publish = requests.get(url_publish, data=json_payload, timeout=2, headers=headers)
+
+        # Verificar se a publicação foi bem-sucedida
+        if response_publish.status_code == 201:
+            print("Transação concluida com sucesso!")
+            return
+        else:
+            print("Transação cancelada!") 
+            return           
+    except Exception as e:
+        print('Não foi possível estabelecer uma conexão com o Bank ...')
+        return 
+
+def getTransId():
+    global bank
+    url_publish = f'http://{bank}:8088/id'
+
+    try:
+        
+        # Publicar na API
+        response_publish = requests.get(url_publish,timeout=2)
+
+        # Verificar se a publicação foi bem-sucedida
+        if response_publish.status_code == 201:
+            return response_publish.json()
+        else:
+            response_json = response_publish.json()
+            error_message = response_json.get('message', 'Unknown error')
+            print("Erro ao enviar os dados UDP para a API:", error_message)            
+    except Exception as e:
+        print('Não foi possível estabelecer uma conexão com o Bank ...')
+        return 
+
+def requestSaque(valor, id, conta):
+    global bank
+    url_publish = f'http://{bank}:8088/users/{id}/accounts/{conta}/take'
 
     try:
         # Preparar os dados para publicar na API
@@ -181,9 +248,9 @@ def requestSaque(valor, id):
     except Exception as e:
         print('Não foi possível estabelecer uma conexão com o Bank ...')
     
-def requestDeposito(valor, id):
+def requestDeposito(valor, id, conta):
     global bank
-    url_publish = f'http://{bank}:8088/users/{id}/accounts/{id[:3]}/deposit'
+    url_publish = f'http://{bank}:8088/users/{id}/accounts/{conta}/deposit'
     print(url_publish)
     try:
         # Preparar os dados para publicar na API
@@ -205,14 +272,12 @@ def requestDeposito(valor, id):
     except Exception as e:
         print('Não foi possível estabelecer uma conexão com o Bank ...')
     
-def requestTransferencia(cod, cliente, valor):
-    # desenvolver depois
+def requestTransferencia(dic, id_origem):
     global bank
-    url_publish = f'http://{bank[:10] + str(cod[:3])}:8088/transferencia'
-
+    url_publish = f'http://{bank[:10] + str(id_origem)[:3]}:8088/transfers'
     try:
         # Preparar os dados para publicar na API
-        payload = {'destino': int(cod), 'valor': valor, 'tipo': 'transferencia', 'origem': cliente.id}  # Supondo que data_udp é uma sequência de bytes
+        payload = dic  # Supondo que data_udp é uma sequência de bytes
         json_payload = json.dumps(payload)  # Convertendo para JSON
         headers = {'Content-Type': 'application/json'}
 
@@ -220,7 +285,7 @@ def requestTransferencia(cod, cliente, valor):
         response_publish = requests.post(url_publish, data=json_payload, timeout=2, headers=headers)
 
         # Verificar se a publicação foi bem-sucedida
-        if response_publish.status_code == 204:
+        if response_publish.status_code == 201:
             pass
         else:
             response_json = response_publish.json()

@@ -23,23 +23,28 @@ transfers = []
 finalizedTransfers = []
 idtransfers = []
 
-# Rota para verificar login todos os usuários do Banco
+# Rota para pegar um id para a transacao
 @app.route('/id', methods=['GET'])
 def get_id():
     id = random.randint(100000, 999999)
     while id in idtransfers:
         id = random.randint(100000, 999999)
     idtransfers.append(id)
-    return jsonify(id)
+    return jsonify(id), 201
 
-# Rota para verificar login todos os usuários do Banco
+# Rota para verificar o status da transacao
 @app.route('/status', methods=['GET'])
 def get_status():
     id = request.get_json()
     for item in finalizedTransfers:
-        if item[0] == str(id):
-            return jsonify(item[1])
-    return jsonify(False)
+        print(finalizedTransfers)
+        print(id)
+        if item[0] == str(id['id']):
+            if item[1] == False:
+                return jsonify(False), 401
+            else:
+                return jsonify(item[1]), 201
+    return jsonify(False), 401
 
 ########################################################## Token ####################################################
 
