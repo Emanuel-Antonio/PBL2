@@ -17,8 +17,8 @@ Nos últimos anos, a adoção de movimentações financeiras exclusivamente por 
 - <A href = "#Api">Api</A><br>
 - <A href = "#Interface">Interface Cli</A><br>
 - <A href = "#Arq">Arquitetura da solução</A><br>
-- <A href = "#Rest"> Interface da Aplicação (REST)</A><br>
-- <A href = "#Pro"> "Problemáticas e Soluções"</A><br>
+- <A href = "#Rest">Interface da Aplicação (REST)</A><br>
+- <A href = "#Pro">Problemáticas e Soluções</A><br>
 - <A href = "#Desem">Desempenho </A><br>
 - <A href = "#Conf">Confiabilidade da solução </A><br>
 - <A href = "#Exec">Como Executar</A><br>
@@ -234,27 +234,9 @@ Em relação a API foram criadas 8 rotas, as quais utilizaram verbos/métodos co
    <br/> <em>Figura 5. Métodos DELETE.</em> <br/>
    
    </div>
-<A name="Form"></A>
-# Formatação, Envio e Tratamento de Dados
-
-A formatação dos dados já foi mencionada anteriormente, reforçando elas são enviadas como strings específicas enviadas em bytes por partes do dispositivo para o broker e vice-versa. Já o broker envia para o cliente através da API que entende o formato JSON. Em relação ao envio para a API, ele utiliza rotas para fazer POST, DELETE, PUT e GET, e na parte dos sockets, ele usa a função sendto. Vale lembrar que, se não enviarmos no formato correto, haverá erros. Para evitar isso, sempre convertemos em bytes para enviar usando sockets e em JSON para enviar para a API. Na Figura 6, podemos ver sobre o formato do JSON dos dispositivos e na Figura 7, podemos ver o formato do JSON das requisições.
-
-<div align="center">
-   
-   ![Figura 6](Imagens/Dispositivo.png)
-   <br/> <em>Figura 6. Formato json dos Dispositivos.</em> <br/>
-   
-   </div>
-
-<div align="center">
-   
-   ![Figura 7](Imagens/Requisicao.png)
-   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
-   
-   </div>
 
 <A name= "Pro"></A>
-# "Problemáticas e Soluções"  
+# Problemáticas e Soluções  
    
 <A name="Trat"></A>
 # Tratamento de Conexões Simultâneas
