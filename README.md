@@ -22,8 +22,7 @@ Nos últimos anos, a adoção de movimentações financeiras exclusivamente por 
   - <A href = "#Rede">Rede em Anel (Token Ring)</A><br>
   - <A href = "#Lock">Lock </A><br>
   - <A href = "#2pc">2PC e 2PL</A><br>
-- <A href = "#Desem">Desempenho </A><br>
-- <A href = "#Conf">Confiabilidade da solução </A><br>
+- <A href = "#Trat">Tratamento de Conexões Simultâneas</A><br>
 - <A href = "#Exec">Como Executar</A><br>
 - <A href = "#clie">Utilizando a Interface</A><br>
 - <A href = "#Conc">Conclusão</A><br>
@@ -268,16 +267,6 @@ Sobre o tratamento de múltiplas conexões, utilizamos threads tanto para recebe
 - **Dificuldades de depuração:** Problemas de concorrência podem ser difíceis de reproduzir e depurar, especialmente em sistemas complexos com muitas threads em execução simultânea.
 
 `Observação:` Pelo uso que foi feito dessa aplicação não foi preciso se preocupar com essas questões, contudo para a ampliação de dispositivos e clientes seria de suma importância relevarmos todos os possivéis problemas.  
-
-<A name="Desem"></A>
-# Desempenho
-
-Sobre o desempenho, exploramos algumas estratégias, como usar threads para receber e enviar dados UDP e TCP. Também usamos threads para lidar com as solicitações HTTP dos clientes. Além disso, na parte das solicitações, destacamos o uso de filas para priorizar aquelas que chegaram primeiro. Essas estratégias ajudam a garantir eficiência e bom desempenho. Essa fila pode ser identificada na função "requisicao()" do arquivo broker.py, já as threads se encontram tanto no arquivo broker.py como no dispositivo.py.
-
-<A name="Conf"></A>
-# Confiabilidade da Solução
-
-Quanto à confiabilidade da solução, ou seja, à segurança das conexões quando o acesso à Internet de um dos componentes é excluído, observa-se que o sistema continua funcionando. Isso ocorre porque há tratamento para exceções geradas ao tentar enviar dados para a API ou ao consumir, por meio do cliente, assim como ao tentar enviar dados via TCP/IP pelo dispositivo. Além disso, o broker não enfrenta esse tipo de problema, pois pode receber conexões de múltiplos dispositivos e clientes, além de substituir as conexões realizadas pela mesma maquina.
 
 <A name="Exec"></A>
 # Como Executar
