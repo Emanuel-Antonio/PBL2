@@ -18,6 +18,7 @@ Nos últimos anos, a adoção de movimentações financeiras exclusivamente por 
 - <A href = "#Interface">Interface Cli</A><br>
 - <A href = "#Arq">Arquitetura da solução</A><br>
 - <A href = "#Rest"> Interface da Aplicação (REST)</A><br>
+- <A href = "#Pro"> "Problemáticas e Soluções"</A><br>
 - <A href = "#Desem">Desempenho </A><br>
 - <A href = "#Conf">Confiabilidade da solução </A><br>
 - <A href = "#Exec">Como Executar</A><br>
@@ -251,6 +252,9 @@ A formatação dos dados já foi mencionada anteriormente, reforçando elas são
    <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
    
    </div>
+
+<A name= "Pro"></A>
+# "Problemáticas e Soluções"  
    
 <A name="Trat"></A>
 # Tratamento de Conexões Simultâneas
