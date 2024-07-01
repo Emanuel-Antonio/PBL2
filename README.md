@@ -162,7 +162,7 @@ Ademais, ainda precisamos falar sobre a ordem que essas comunicações acontecem
  <div align="center">
    
    ![Figura 1](Imagens/Diagrama.png)
-   <br/> <em>Figura 1. Camada de Transporte.</em> <br/>
+   <br/> <em>Figura 1. Sistema de bancos centralizado.</em> <br/>
    
    </div>
 
