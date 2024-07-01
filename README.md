@@ -165,8 +165,8 @@ Ademais, ainda precisamos falar sobre a ordem que essas comunicações acontecem
 
  <div align="center">
    
-   ![Figura 1](Imagens/Diagrama.png)
-   <br/> <em>Figura 1. Sistema de bancos centralizado.</em> <br/>
+   ![Figura 1](Images/Diagrama.png)
+   <br/> <em>Figura 1. Sistema de Bancos Centralizado.</em> <br/>
    
    </div>
 
