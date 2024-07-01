@@ -37,7 +37,7 @@ A API atua como servidor para um banco específico, permitindo aos usuários ace
 Este arquivo contém as rotas responsáveis pela gerenciamento de transações via token e pela realização de transações bancárias. Ele implementa métodos HTTP POST, GET, PUT e DELETE para operações específicas. Abaixo estão detalhadas as funcionalidades de cada rota e função desse arquivo.
 </p>
 
- `Observação:` Vale ressaltar que a dinâmica de utilização do token para o gerenciamento de transações será abordada na subseção "Rede em Anel" da seção "Concorrência".
+ `Observação:` Vale ressaltar que a dinâmica de utilização do token para o gerenciamento de transações será abordada na subseção "Rede em Anel" da seção "Problemáticas e Soluções".
  
 ### Rotas
 
@@ -176,12 +176,20 @@ Analisando a imagem, observa-se que toda a comunicação depende do agente centr
 
 ### Sistema de Bancos Descentralizados (Utilizado nesta Aplicação)
 
+<p align="justify">
+ Em um sistema de bancos distribuídos, a arquitetura permite que múltiplos bancos operem de forma interligada e colaborativa, sem depender exclusivamente de um ponto central de controle. Cada banco possui autonomia para processar transações localmente e se comunicar diretamente com outros bancos dentro do consórcio. Essa abordagem promove maior resiliência e escalabilidade ao sistema, uma vez que falhas em um banco não comprometem necessariamente todo o sistema. Além disso, a distribuição de recursos e responsabilidades entre os bancos pode otimizar a eficiência operacional e aumentar a segurança, permitindo o processamento paralelo e redundante das transações, reduzindo a vulnerabilidade a falhas em pontos únicos. Contudo, sistemas distribuídos possuem vários desafios na sua implementação. Gerenciar a consistência dos dados entre diferentes bancos, garantir a sincronização adequada das transações, lidar com a latência das comunicações entre os bancos e garantir a segurança de ponta a ponta são alguns dos desafios críticos enfrentados. Além disso, a complexidade aumenta com a necessidade de implementar algoritmos distribuídos para coordenação e consenso entre os sistemas, visando evitar problemas como inconsistências de dados e conflitos de transações. Tais problemáticas sobre a implementação desse sistema serão abordadas na seção "Problemáticas e Soluções".
+</p>
+
  <div align="center">
    
    ![Figura 1](Images/Diagrama2.png)
    <br/> <em>Figura 1. Sistema de Bancos Descentralizados.</em> <br/>
    
    </div>
+
+<p align="justify">
+Observe que a imagem ilustra que um banco pode se conectar com todos os outros bancos presentes no consórcio. Isso ocorre porque, em caso de falha no sistema de um desses bancos, ele pode tentar se comunicar com outro banco disponível. Dessa forma, ao contrário dos sistemas centralizados, a dependência é reduzida, pois para que todo o sistema pare, todos os bancos teriam que estar fora do ar simultaneamente.
+</p>
 
 <A name="Rest"></A>
 # Interface da Aplicação (REST)
