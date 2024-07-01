@@ -14,9 +14,8 @@ Nos últimos anos, a adoção de movimentações financeiras exclusivamente por 
 
 # Sumário
 - <A href = "#Intr">Introdução</A><br>
-- <A href = "#Brok">Broker</A><br>
-- <A href = "#Dispositivo">Dispositivo</A><br>
-- <A href = "#Cliente">Cliente</A><br>
+- <A href = "#Api">Api</A><br>
+- <A href = "#Interface">Interface Cli</A><br>
 - <A href = "#Arq">Arquitetura da solução</A><br>
 - <A href = "#Apli">Protocolo de comunicação entre dispositivo e Broker - camada de aplicação</A><br>
 - <A href = "#Tran">Protocolo de comunicação entre dispositivo e Broker - camada de transporte</A><br>
@@ -31,53 +30,85 @@ Nos últimos anos, a adoção de movimentações financeiras exclusivamente por 
 - <A href = "#Disp">Interface do Dispositivo</A><br>
 - <A href = "#Conc">Conclusão</A><br>
 
-<A name= "Brok"></A>
-# Broker
+<A name= "Api"></A>
+# Api
 
-Em geral o componente Broker serve de intermediador entre os "Clientes" e os "Dispositivos" e lida tanto com as comunicações TCP/IP e HTTP através da API.
+<p align='justify'>
+A API atua como servidor para um banco específico, permitindo aos usuários acessar diversas funcionalidades, tais como: criação de contas, realização de transferências, depósitos, saques, entre outras. Toda a comunicação ocorre por meio de uma API REST, implementada com Flask, uma biblioteca versátil da linguagem Python.
+</p>
 
-## Arquivo Auxiliar (api.py)
+## Arquivo Principal (new_api.py)
 
-Este arquivo consiste na criação das rotas para que possamos importar e executar a API no arquivo broker.py. Isto foi feito para que o arquivo broker.py não fique poluído. Ademais, vale falar que nele utilizamos rotas POST, GET, PUT e DELETE.
+<p align='justify'>
+Este arquivo contém as rotas responsáveis pela gerenciamento de transações via token e pela realização de transações bancárias. Ele implementa métodos HTTP POST, GET, PUT e DELETE para operações específicas. Abaixo estão detalhadas as funcionalidades de cada rota e função desse arquivo.
+</p>
 
-## Arquivo Principal (broker.py)
+ `Observação:` Vale ressaltar que a dinâmica de utilização do token para o gerenciamento de transações será abordada na subseção "Rede em Anel" da seção "Concorrência".
+ 
+### Rotas
 
-Agora uma breve explicação sobre cada uma das funções do broker.py.
+  - ***/id:*** Rota GET responsável por fornecer um ID válido para uso em um pacote de transações. Retorna o ID e o código 201 quando bem-sucedido.
 
-  - ***main():*** Responsável por criar duas threads, tcp_thread e requisicao_thread, as quais executam as funções tcp_udp_server e requisicao, respectivamente. Entretanto, após isto ele ainda inicia a aplicação Flask.
+   - ***/status:*** Rota GET responsável por verificar o status de um pacote de transações enviado para execução no banco, utilizando o ID da transação recebido no JSON, retorna o código 201 se o pacote foi executado com sucesso e 401 caso contrário.
 
-  - ***tcp_udp_server():*** Aqui é feito a criação dos sockets UDP e TCP, além de deixar ele escutando conexões TCP, para guardar tais conexões em um lista de conexões para uso futuro. Ademais, a criação da thread que irá escutar mensagens UDP também é feita nessa função.  
+   - ***/receive_token:*** Rota POST responsável por receber o token de outro banco do consórcio. Retorna o código 200 quando o token é recebido com uma sequência válida. A sequência estará presente no JSON.
 
-  - ***receberUdp():*** Está função por sua vez faz somente a recepção dos dados UDP e repassa para ser tratado em uma thread que roda a função tratar dados.
+   - ***/login:*** Rota POST responsável por verificar o usuário e senha enviados pelo JSON. Retorna o código 201 quando as credenciais correspondem aos dados do banco; caso contrário, retorna 401.
 
-  - ***tratarDados(data_udp, addr_udp):*** Tal função se compromete a fazer o tratamento adequado do dado UDP recebido. Ele pode utilizar os métodos POST e PUT através de rotas especificas para armazenar esses dados em um arquivo json. 
+   - ***/users:*** Rota GET responsável por pegar os dados de todos os usuários do banco. Retorna 201 quando executado adequandamente. Vale informar que por segurança nenhum retorno da API retorna dados de senha.
 
-  - ***pegar_horario_atual_json():*** Essa outra função está responsável somente por pegar o horário atual e guardar a hora, minuto e segundo em um dicionário.
+   - ***/users/user_id:*** Rota GET responsável por pegar os dados de um usuário específico, através do user_id. Retorna 201 quando executado adequandamente e 401 caso contrário.
 
-  - ***enviar_para_api(data_udp, addr):*** Função como o nome já diz envia os dados UDP recebidos para a API através de rotas, tais dados formam um dispositivo.
+   - ***/users:*** Rota POST responsável por criar um usuário no banco. Retorna 201 quando executado adequandamente.
 
-  - ***atualizar_dado_api(dado_udp, id):*** Simplesmente, esta função usa rotas da API para atualizar informações em vez de criar novos dispositivos.
+   - ***/users/user_id/accounts:*** Rota POST responsável por postar uma nova conta a um usuário existente, através do parametro user_id. Retorna 201 quando executado adequandamente e 401 caso contrário.
 
-  - ***remover_dispositivo(dado_id):*** Como o nome já fala, essa função se responsabiliza por remover dispositivos da API através de rotas.
+   - ***/users/user_id/accounts:*** Rota GET responsável por pegar todas as contas de um usuário específico, através do user_id. Retorna 201 quando executado adequandamente e 401 caso contrário.
 
-  - ***remover_requisicao(dado_id):*** Esta outra função se responsabiliza por remover dados da API, contudo, diferente da última função ele remove requisições e não dispositivos.
+   - ***/users/user_id/accounts/account_id:*** Rota GET responsável por pegar uma conta específico, através do user_id e account_id. Retorna 201 quando executado adequandamente e 401 caso contário.
 
-  - ***requisicao():*** Por fim, essa última função trabalha em thread para que ele possa rebecer constantemente requisições e repassar essas requisições para os respectivos dispositivos.
+   - ***/users/user_id:*** Rota DELETE responsável por deletar um usuário específico, através do user_id. Retorna 201 quando executado adequandamente.
+
+   - ***/users/user_id:*** Rota PUT responsável por atualizar um usuário específico, através do user_id. Seu retorno é 201 para atualizado com sucesso e 401 caso contrário.
+
+   - ***/users/user_id/accounts/account_id/deposit:*** Rota responsável por realizar um deposito em uma conta especificada pelo user_id e account_id. O JSON só indica o valor a ser depositado. Como as outras rotas, o retorno 201 representa que a operação foi bem sucedida e 401 representa o oposto.
+
+   - ***/users/user_id/accounts/account_id/take:*** Rota responsável por realizar um saque em uma conta especificada pelo user_id e account_id. O JSON indica apenas o valor do saque. Assim como nas outras rotas, retorna o código 201 quando executado adequadamente e 401 caso contrário.
+
+   - ***/sender:*** Rota responsável por adicionar o valor transferido à conta de destino, utilizando o ID e o valor recebidos do JSON. Ademais, retorna o código 201 se a operação for bem-sucedida e 401 caso contrário.
+
+   - ***/abort:*** Rota responsável por reverter uma transação de um pacote. Ela utiliza do ID e valor recebido para realizar essa operação e retorna o código 201 se a reversão for bem-sucedida e 401 caso contrário.
+
+   - ***/recipient:*** Rota responsável por receber um valor e um ID, e realizar o débito desse valor no saldo da conta associada a esse ID. Vale ressaltar que seu retorno é 201 quando executada corretamente e 401 caso contrário.
+
+   - ***/transfers:*** Rota responsável por receber pacotes de transações da interface CLI a qualquer momento e armazená-los na lista de transferências. Se executada adequadamente, retorna o código 201; caso contrário, retorna 401.
+     
+### Funções
+
+  - ***pass_token():*** Esta função opera em uma thread no servidor e tem como propósito transferir o token para outro banco dentro do consórcio. A transferência ocorre somente quando todas as condições necessárias para o repasse do token são satisfeitas.
+
+  - ***receive_token():*** Esta função é responsável por executar uma sequência de operações imediatamente após receber o token pela rota designada. Primeiro, ela tenta realizar a operação. Em seguida, ela atualiza o valor de uma variável global, liberando uma thread encarregada de passar o token para outro banco do consórcio.
+
+  - ***check_token():*** Esta função verifica o tempo que o banco está sem o token. Ademais, ela opera em uma thread separada para não interferir nas outras funções do servidor do banco e caso o banco fique sem o token por um período específico, a função interpreta que o consórcio perdeu o token e regenera um novo.
+
+  - ***find_account(user, account_id):*** Esta função é responsável por buscar uma conta específica utilizando os parâmetros user e account_id. Retorna None caso a conta não exista no banco.
+
+  - ***find_user(user_id):*** Função responsável por buscar um usuário específico na lista de usuários, utilizando o parâmetro user_id. Retorna None caso o usuário não seja encontrado.
+  
+  - ***abort_transactions(transactions):*** Esta função desempenha um papel crucial na garantia da atomicidade, sendo responsável por reverter as transações do pacote em caso de problemas durante sua execução. A rota "/abort" é utilizada para desfazer as transações que foram realizadas com sucesso anteriormente, e que estavam no mesmo pacote da transação que falhou.
     
-<A name= "Dispositivo"></A>
-# Dispositivo
+  - ***transfer(transations):*** Tal função se caracteriza por executar todas as transações recebidas de maneira segura, garantindo a atomicidade dentro do pacote de transações passado como parâmetro desta função. Ademais, ao finalizar retorna True quando o pacote é executado com sucesso e False caso contrário.
+ 
+  - ***init_server_flask():*** Esta função é responsável por inicializar a aplicação Flask.
+
+  - ***main():*** Por último, esta função, como o próprio nome indica, é responsável pela ordem de execução das outras funções e rotas. Neste arquivo, ela é concisa, focando na inicialização das threads para passagem de token, verificação de token e da API do banco.
+    
+<A name= "Interface"></A>
+# Interface Cli
 
 O dispositivo serve para simular um componente IoT. Neste projeto, ele é uma lâmpada que pode ser ligada, desligada ou ter seu brilho alterado remotamente.
 
-## Arquivo Principal (dispositivo.py)
-
-- ***main():*** Essa função é responsável por criar os sockets, iniciar uma comunicação TCP com o broker e criar três threads, que são threads das funções receberTcp, enviarDadoUdp e menu, respectivamente.
-  
-- ***menu():*** Essa função tem como propósito mostrar o menu de opções e esperar uma entrada do usuário.
-  
-- ***receberTcp(client):*** Essa função como o nome diz está responsável por aguardar mensagens do Broker e fazer alterações em variáveis quando preciso. Note também que ele recebe um argumento client, o qual guarda a conexão que ele deverá escutar.
-    
-- ***enviarDadoUdp(client_udp):*** Esta função como o nome fala, tem como responsabilidade enviar os dados continuamente para o Broker. Observe que ele possui um argumento client_udp, este guarda uma conexão assim como a função anterior, contudo essa conexão é UDP ao invés de TCP.
+## Arquivo Principal (new_user.py)
 
 - ***limpar_terminal():*** Esta função tem como responsabilidade limpar o terminal. Para isso, ela verifica o sistema operacional para determinar qual função utilizar. Isto pois para limpar o terminal no "Windows" é diferente de limpar no "Linux".
 
