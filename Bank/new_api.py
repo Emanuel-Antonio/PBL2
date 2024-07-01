@@ -415,13 +415,13 @@ def transfer(transations):
     return True
 
 # Função para iniciar o servidor Flask
-def iniciar_servidor_flask():
+def init_server_flask():
     app.run(host='0.0.0.0', port=8088, threaded=True)
 
 def main():
     
     # Inicia o servidor Flask em uma nova thread
-    thread_servidor_flask = threading.Thread(target=iniciar_servidor_flask)
+    thread_servidor_flask = threading.Thread(target=init_server_flask)
     thread_servidor_flask.start()
     
     # Inicializa o nó com o token (apenas para o primeiro nó na rede)
