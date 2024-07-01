@@ -19,10 +19,10 @@ Nos últimos anos, a adoção de movimentações financeiras exclusivamente por 
 - <A href = "#Arq">Arquitetura da solução</A><br>
 - <A href = "#Rest">Interface da Aplicação (REST)</A><br>
 - <A href = "#Pro">Problemáticas e Soluções</A><br>
-  - <A href = "#Rede">Rede em Anel (Token Ring)</A><br>
-  - <A href = "#Lock">Lock </A><br>
-  - <A href = "#2pc">2PC e 2PL</A><br>
-- <A href = "#Trat">Tratamento de Conexões Simultâneas</A><br>
+  - <A href = "#Trat">Tratamento de Conexões Simultâneas</A><br>
+    - <A href = "#Rede">Rede em Anel (Token Ring)</A><br>
+    - <A href = "#Lock">Lock </A><br>
+    - <A href = "#2pc">2PC e 2PL</A><br>
 - <A href = "#clie">Utilizando a Interface</A><br>
 - <A href = "#Teste">Testes</A><br>
 - <A href = "#Exec">Como Executar</A><br>
@@ -239,17 +239,8 @@ Em relação a API foram criadas diversas rotas, as quais utilizaram verbos/mét
    </div>
 
 <A name= "Pro"></A>
-# Problemáticas e Soluções  
+# Problemáticas e Soluções 
 
-<A name= "Rede"></A>
-# Rede em Anel (Token Ring)
-
-<A name= "Lock"></A>
-# Lock
-
-<A name= "2pc"></A>
-# 2PC E 2PL
-   
 <A name="Trat"></A>
 # Tratamento de Conexões Simultâneas
 
@@ -269,6 +260,16 @@ Sobre o tratamento de múltiplas conexões, utilizamos threads tanto para recebe
 
 `Observação:` Pelo uso que foi feito dessa aplicação não foi preciso se preocupar com essas questões, contudo para a ampliação de dispositivos e clientes seria de suma importância relevarmos todos os possivéis problemas.  
 
+
+<A name= "Rede"></A>
+# Rede em Anel (Token Ring)
+
+<A name= "Lock"></A>
+# Lock
+
+<A name= "2pc"></A>
+# 2PC E 2PL
+   
 <A name="clie"></A>
 # Utilizando a Interface
 
