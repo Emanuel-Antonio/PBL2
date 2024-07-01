@@ -17,17 +17,11 @@ Nos últimos anos, a adoção de movimentações financeiras exclusivamente por 
 - <A href = "#Api">Api</A><br>
 - <A href = "#Interface">Interface Cli</A><br>
 - <A href = "#Arq">Arquitetura da solução</A><br>
-- <A href = "#Apli">Protocolo de comunicação entre dispositivo e Broker - camada de aplicação</A><br>
-- <A href = "#Tran">Protocolo de comunicação entre dispositivo e Broker - camada de transporte</A><br>
-- <A href = "#Rest">Interface da Aplicação </A><br>
-- <A href = "#Form">Formatacao, envio e tratamento de dados</A><br>
-- <A href = "#Trat">Tratamento de conexões simultaneas </A><br>
-- <A href = "#Geren">Gerenciamento do dispositivo</A><br>
+- <A href = "#Rest"> Interface da Aplicação (REST)</A><br>
 - <A href = "#Desem">Desempenho </A><br>
 - <A href = "#Conf">Confiabilidade da solução </A><br>
 - <A href = "#Exec">Como Executar</A><br>
-- <A href = "#clie">Interface do Cliente</A><br>
-- <A href = "#Disp">Interface do Dispositivo</A><br>
+- <A href = "#clie">Utilizando a Interface</A><br>
 - <A href = "#Conc">Conclusão</A><br>
 
 <A name= "Api"></A>
@@ -49,39 +43,39 @@ Este arquivo contém as rotas responsáveis pela gerenciamento de transações v
 
   - ***/id:*** Rota GET responsável por fornecer um ID válido para uso em um pacote de transações. Retorna o ID e o código 201 quando bem-sucedido.
 
-   - ***/status:*** Rota GET responsável por verificar o status de um pacote de transações enviado para execução no banco, utilizando o ID da transação recebido no JSON, retorna o código 201 se o pacote foi executado com sucesso e 401 caso contrário.
+  - ***/status:*** Rota GET responsável por verificar o status de um pacote de transações enviado para execução no banco, utilizando o ID da transação recebido no JSON, retorna o código 201 se o pacote foi executado com sucesso e 401 caso contrário.
 
-   - ***/receive_token:*** Rota POST responsável por receber o token de outro banco do consórcio. Retorna o código 200 quando o token é recebido com uma sequência válida. A sequência estará presente no JSON.
+  - ***/receive_token:*** Rota POST responsável por receber o token de outro banco do consórcio. Retorna o código 200 quando o token é recebido com uma sequência válida. A sequência estará presente no JSON.
 
-   - ***/login:*** Rota POST responsável por verificar o usuário e senha enviados pelo JSON. Retorna o código 201 quando as credenciais correspondem aos dados do banco; caso contrário, retorna 401.
+  - ***/login:*** Rota POST responsável por verificar o usuário e senha enviados pelo JSON. Retorna o código 201 quando as credenciais correspondem aos dados do banco; caso contrário, retorna 401.
 
-   - ***/users:*** Rota GET responsável por pegar os dados de todos os usuários do banco. Retorna 201 quando executado adequandamente. Vale informar que por segurança nenhum retorno da API retorna dados de senha.
+  - ***/users:*** Rota GET responsável por pegar os dados de todos os usuários do banco. Retorna 201 quando executado adequandamente. Vale informar que por segurança nenhum retorno da API retorna dados de senha.
 
-   - ***/users/user_id:*** Rota GET responsável por pegar os dados de um usuário específico, através do user_id. Retorna 201 quando executado adequandamente e 401 caso contrário.
+  - ***/users/user_id:*** Rota GET responsável por pegar os dados de um usuário específico, através do user_id. Retorna 201 quando executado adequandamente e 401 caso contrário.
 
-   - ***/users:*** Rota POST responsável por criar um usuário no banco. Retorna 201 quando executado adequandamente.
+  - ***/users:*** Rota POST responsável por criar um usuário no banco. Retorna 201 quando executado adequandamente.
 
-   - ***/users/user_id/accounts:*** Rota POST responsável por postar uma nova conta a um usuário existente, através do parametro user_id. Retorna 201 quando executado adequandamente e 401 caso contrário.
+  - ***/users/user_id/accounts:*** Rota POST responsável por postar uma nova conta a um usuário existente, através do parametro user_id. Retorna 201 quando executado adequandamente e 401 caso contrário.
 
-   - ***/users/user_id/accounts:*** Rota GET responsável por pegar todas as contas de um usuário específico, através do user_id. Retorna 201 quando executado adequandamente e 401 caso contrário.
+  - ***/users/user_id/accounts:*** Rota GET responsável por pegar todas as contas de um usuário específico, através do user_id. Retorna 201 quando executado adequandamente e 401 caso contrário.
 
-   - ***/users/user_id/accounts/account_id:*** Rota GET responsável por pegar uma conta específico, através do user_id e account_id. Retorna 201 quando executado adequandamente e 401 caso contário.
+  - ***/users/user_id/accounts/account_id:*** Rota GET responsável por pegar uma conta específico, através do user_id e account_id. Retorna 201 quando executado adequandamente e 401 caso contário.
 
-   - ***/users/user_id:*** Rota DELETE responsável por deletar um usuário específico, através do user_id. Retorna 201 quando executado adequandamente.
+  - ***/users/user_id:*** Rota DELETE responsável por deletar um usuário específico, através do user_id. Retorna 201 quando executado adequandamente.
 
-   - ***/users/user_id:*** Rota PUT responsável por atualizar um usuário específico, através do user_id. Seu retorno é 201 para atualizado com sucesso e 401 caso contrário.
+  - ***/users/user_id:*** Rota PUT responsável por atualizar um usuário específico, através do user_id. Seu retorno é 201 para atualizado com sucesso e 401 caso contrário.
 
-   - ***/users/user_id/accounts/account_id/deposit:*** Rota responsável por realizar um deposito em uma conta especificada pelo user_id e account_id. O JSON só indica o valor a ser depositado. Como as outras rotas, o retorno 201 representa que a operação foi bem sucedida e 401 representa o oposto.
+  - ***/users/user_id/accounts/account_id/deposit:*** Rota responsável por realizar um deposito em uma conta especificada pelo user_id e account_id. O JSON só indica o valor a ser depositado. Como as outras rotas, o retorno 201 representa que a operação foi bem sucedida e 401 representa o oposto.
 
-   - ***/users/user_id/accounts/account_id/take:*** Rota responsável por realizar um saque em uma conta especificada pelo user_id e account_id. O JSON indica apenas o valor do saque. Assim como nas outras rotas, retorna o código 201 quando executado adequadamente e 401 caso contrário.
+  - ***/users/user_id/accounts/account_id/take:*** Rota responsável por realizar um saque em uma conta especificada pelo user_id e account_id. O JSON indica apenas o valor do saque. Assim como nas outras rotas, retorna o código 201 quando executado adequadamente e 401 caso contrário.
 
-   - ***/sender:*** Rota responsável por adicionar o valor transferido à conta de destino, utilizando o ID e o valor recebidos do JSON. Ademais, retorna o código 201 se a operação for bem-sucedida e 401 caso contrário.
+  - ***/sender:*** Rota responsável por adicionar o valor transferido à conta de destino, utilizando o ID e o valor recebidos do JSON. Ademais, retorna o código 201 se a operação for bem-sucedida e 401 caso contrário.
 
-   - ***/abort:*** Rota responsável por reverter uma transação de um pacote. Ela utiliza do ID e valor recebido para realizar essa operação e retorna o código 201 se a reversão for bem-sucedida e 401 caso contrário.
+  - ***/abort:*** Rota responsável por reverter uma transação de um pacote. Ela utiliza do ID e valor recebido para realizar essa operação e retorna o código 201 se a reversão for bem-sucedida e 401 caso contrário.
 
-   - ***/recipient:*** Rota responsável por receber um valor e um ID, e realizar o débito desse valor no saldo da conta associada a esse ID. Vale ressaltar que seu retorno é 201 quando executada corretamente e 401 caso contrário.
+  - ***/recipient:*** Rota responsável por receber um valor e um ID, e realizar o débito desse valor no saldo da conta associada a esse ID. Vale ressaltar que seu retorno é 201 quando executada corretamente e 401 caso contrário.
 
-   - ***/transfers:*** Rota responsável por receber pacotes de transações da interface CLI a qualquer momento e armazená-los na lista de transferências. Se executada adequadamente, retorna o código 201; caso contrário, retorna 401.
+  - ***/transfers:*** Rota responsável por receber pacotes de transações da interface CLI a qualquer momento e armazená-los na lista de transferências. Se executada adequadamente, retorna o código 201; caso contrário, retorna 401.
      
 ### Funções
 
@@ -102,40 +96,51 @@ Este arquivo contém as rotas responsáveis pela gerenciamento de transações v
   - ***init_server_flask():*** Esta função é responsável por inicializar a aplicação Flask.
 
   - ***main():*** Por último, esta função, como o próprio nome indica, é responsável pela ordem de execução das outras funções e rotas. Neste arquivo, ela é concisa, focando na inicialização das threads para passagem de token, verificação de token e da API do banco.
+
+   `Observação:` Vale ressaltar que boa parte dessas funções possuem um bloco try-catch, visto que realizam operações delicadas. Mais detalhes podem ser encontrados na documentação do código.
     
 <A name= "Interface"></A>
 # Interface Cli
 
-O dispositivo serve para simular um componente IoT. Neste projeto, ele é uma lâmpada que pode ser ligada, desligada ou ter seu brilho alterado remotamente.
+<p align='justify'>
+A interface CLI permite que o usuário acesse as funcionalidades do banco. Para isso, o arquivo da interface utiliza requisições HTTP para interagir com o servidor do banco.
+</p>
 
 ## Arquivo Principal (new_user.py)
 
-- ***limpar_terminal():*** Esta função tem como responsabilidade limpar o terminal. Para isso, ela verifica o sistema operacional para determinar qual função utilizar. Isto pois para limpar o terminal no "Windows" é diferente de limpar no "Linux".
+<p align='justify'>
+A seguir, uma breve descrição de cada função presente no arquivo 'new_user.py', que representa nossa interface CLI.
+</p>
+
+  - ***login(users):*** Esta função é responsável por realizar o login ou criar uma nova conta. No processo de login, utiliza a lista de usuários fornecida como parâmetro. O retorno são os dados do usuário logado.
+
+  - ***createAccount(id, name, age, password, tipo, pix):*** Esta função é responsável por realizar a criação de uma conta dentro do banco. Os parâmetros da função representam os dados necessários para essa criação de conta.
+
+  - ***verificarLogin(id, password):*** Esta função é responsável por verificar o login de um usuário em sua conta bancária, através de uma rota POST,  utilizando os parâmetros id e password.
+
+  - ***addBank(id, saldo, password):*** Esta função tem como objetivo adicionar uma nova conta bancária a um usuário existente dentro do banco através de uma requisição POST. Os parâmetros incluem os dados dessa nova conta.
+
+  - ***getUsers():*** Esta função é responsável por obter os dados de todos os usuário do banco. O retorno da função é a lista de usuários.
+
+  - ***getUser(id):*** Esta função é responsável por obter os dados de um usuário do banco através de uma requisição GET. O parâmetro id é utilizado para buscar esse usuário no servidor do banco e o retorno é um dicionário com os dados do usuário.
+
+  - ***logged(user):*** Esta função tem como propósito oferecer uma série de opções quando o usuário já estiver logado em sua conta no banco. As opções incluem: realizar transação, depósito, saque, sair, entre outras. O parâmetro user armazena os dados de conta do usuário.
+
+  - ***verStatus(id):*** Esta função tem como objetivo realizar um GET no servidor do banco para verificar o status do último pacote de transações enviado pela interface. O parâmetro id representa o id do pacote de transações para fazer a verificação no banco.
+
+  - ***getTransId():*** Esta função tem como objetivo realizar um GET de um ID válido no servidor do banco para adicionar a uma transação que está sendo criada. O retorno da função será esse ID.
+
+  - ***requestSaque(valor, id, conta):*** Esta função é responsável por realizar o POST de um saque em uma conta especificada pelos parâmetros da função. Os parâmetros incluem o valor a ser sacado, o ID do usuário e a chave PIX da conta.
+
+  - ***requestDeposito(valor, id, conta):*** Esta função é responsável por realizar o POST de um depósito em uma conta especificada pelos parâmetros da função. Os parâmetros incluem o valor a ser depositado, o ID do usuário e a chave PIX da conta.
+
+  - ***requestTransferencia(dic, id_origem):*** Esta função tem como propósito realizar o POST de um pacote de transações no servidor do banco por meio de rotas HTTP. A rota utilizada é "/transfers". Os parâmetros da função representam o dicionário que será enviado e o id_origem, que identifica a conta que realizará o pacote de transferências.
+
+  - ***limpar_terminal():*** Esta função tem como responsabilidade limpar o terminal. Para isso, ela verifica o sistema operacional para determinar qual função utilizar. Isto pois para limpar o terminal no "Windows" é diferente de limpar no "Linux".
+
+  - ***main():*** Esta função é responsável por definir as regras de negócio do programa, estabelecendo a ordem de execução das funções e procedimentos presentes no sistema.
 
    `Observação:` Vale ressaltar que boa parte dessas funções possuem um bloco try-catch, visto que realizam operações delicadas. Mais detalhes podem ser encontrados na documentação do código.
-  
-<A name= "Cliente"></A>
-# Cliente
-
-O cliente serve para simular uma interface de controle remoto, a qual pode enviar comandos para vários dispositivos com o auxílio do Broker. Observe que essa interface é uma interface de linha de comando (CLI) e não gráfica.
-
-## Arquivo Principal (cliente.py)
-
-- ***main():*** Essa função será responsável pela execução geral do código, incluindo a exibição do menu, a espera de entradas e o encaminhamento de requisições e solicitações para outras funções.
-
-- ***enviarRequisicao(num, comando):*** Esta outra função, como o próprio nome indica, realiza o envio de requisições para a API, utilizando o método POST. Além disso, ela recebe os argumentos num e comando, que representam o identificador (ID) do dispositivo e o comando a ser enviado, respectivamente.
-
-- ***verificaDados():*** Esta função tem como responsabilidade utilizar o método GET para adquirir os dados dos dispositivos, através da API.
-
-- ***limpar_terminal():*** Esta função tem como responsabilidade limpar o terminal. Para isso, ela verifica o sistema operacional para determinar qual função utilizar. Isto pois para limpar o terminal no "Windows" é diferente de limpar no "Linux".
-
-  `Observação:` Vale ressaltar que boa parte dessas funções também possuem um bloco try-catch, visto que realizam operações delicadas. Mais detalhes podem ser encontrados na documentação do código.
-
-# Tecnologias utilizadas
-
-- ***Ferramantas:*** Para o desenvolvimento desta aplicação, utilizamos ferramentas como Insomnia e Visual Studio Code.
-
-- ***Outras:*** Para a produção do código fonte, utilizamos a linguagem de programação Python, além de algumas bibliotecas dessa linguagem, tais como requests, Flask, etc.
 
 <A name="Arq"></A>
 # Arquitetura da solução
@@ -162,28 +167,6 @@ Ademais, ainda precisamos falar sobre a ordem que essas comunicações acontecem
    </div>
 
 Analisando a imagem, mais especificamente na parte "Envio de comandos", fica evidente que todas as informações passam pelo broker, independentemente de serem dados ou comandos. Por exemplo, se desejo enviar uma mensagem remotamente do cliente para um dispositivo, devo adicionar o comando à minha API através de uma rota. Em seguida, o broker utilizará o protocolo TCP/IP para enviar o comando ao dispositivo via TCP. Já na parte "Conexão Dispositivo -> Broker", é nos mostrado que o dispositivo inicia a comunicação TCP, a fim de que o broker identifique e armazene as conexões.
-   
-# Protocolo de Comunicação entre Dispositivo e Broker
-
- <A name="Apli"></A>
-- ***Camada de Aplicação:***
-
-   - **Dispositivo:** Sobre o protocolo que o dispositivo utiliza para se comunicar com o broker, devemos abordar que o dispositivo começa criando uma comunicação TCP. Isto apenas para armazenar a conexão no broker. A partir desse ponto, ele cria a comunicação UDP e envia os dados continuamente a cada meio segundo para o broker.
-     
-       `Observação:` É válido mencionar que os dados enviados via UDP consistem em um dado, seguida pelo endereço IP do dispositivo e a porta que ele utilizou para a comunicação. Além disso, esse dado pode representar o estado de 'Desligado' ou, respectivamente, o brilho atual do dispositivo. Note que para identificar se o dispositivo está ligado basta verificar se o dado é diferente de 'Desligado'.
-     
-   - **Broker:** Por parte do dispositivo, ele só encaminha mensagens utilizando TCP quando necessário. Para isso, ele verifica se há alguma requisição na API. Se for o caso, ele envia o dado para o respectivo dispositivo através da conexão previamente estabelecida. Esses dados podem ser "Desligar", "Ligar" ou o brilho a ser alterado. Por outro lado, na parte da aplicação, a cada dado que chega, é verificado se o dispositivo já foi armazenado. Se não foi, todos os dados são enviados para a API, incluindo Dado, Id, Endereço e Data. Caso contrário, apenas o Dado é atualizado na API.
-
-  - **Cliente:** O cliente envia os dados para a API quando solicitado. Nesse caso, ele fará uma requisição POST em uma determinada rota, que receberá os dados IP, Num e Dado, respectivamente. Além disso, quando for solicitado um dado de um dispositivo, o cliente apenas fará a leitura dos dados através de outra rota existente.
-    
-     `Observação:` Os dados do IP são preenchidos automaticamente pela API. Já o número do dispositivo será escolhido pelo usuário e o Dado pode ser "Desligar", "Ligar" ou um inteiro referente ao valor do brilho a ser alterado.
-  
-<A name="Tran"></A>
-- ***Camada de Transporte:***
-
-   - **Dispositivo:** Sobre o protocolo utilizado pelo dispositivo para se comunicar com o broker, é importante mencionar que foi utilizado o protocolo UDP para o envio de dados. A razão para optar pelo UDP em vez do TCP nesse caso é que o User Datagram Protocol (UDP) é caracterizado por uma baixa sobrecarga, uma vez que não incorpora mecanismos de controle de fluxo, retransmissão de pacotes ou garantias de entrega ordenada. Isso o torna mais eficiente em termos de largura de banda e tempo de latência. Além disso, sua natureza sem conexão e sem garantias proporciona uma baixa latência em comparação com o Transmission Control Protocol (TCP), tornando-o ideal para aplicativos que demandam uma resposta rápida e em tempo real, como streaming de áudio e vídeo, bem como jogos online. Em suma, mesmo que ocorra perda de dados, a velocidade de transmissão ainda compensa na maioria dos casos.
-     
-   - **Broker:** Falando do Broker, ele se comunica com o dispositivo utilizando o protocolo TCP para o envio de comandos. Porque, o Transmission Control Protocol (TCP) oferece confiabilidade ao garantir a entrega, ordem e integridade dos dados, utilizando mecanismos como confirmações de recebimento e retransmissões de pacotes perdidos. Além disso, o TCP inclui algoritmos para controlar o fluxo de dados entre remetente e destinatário, evitando sobrecarga do destinatário, e mecanismos para detectar e reagir a congestionamentos na rede, ajustando dinamicamente a taxa de transmissão. Outro aspecto importante é a garantia de entrega ordenada dos dados, fundamental para aplicativos que exigem essa ordem, como transferências de arquivos e streaming de mídia. Em resumo, utilizamos o TCP porque não queremos perder comandos/requisições.
 
 <A name="Rest"></A>
 # Interface da Aplicação (REST)
@@ -263,11 +246,6 @@ Sobre o tratamento de múltiplas conexões, utilizamos threads tanto para recebe
 
 `Observação:` Pelo uso que foi feito dessa aplicação não foi preciso se preocupar com essas questões, contudo para a ampliação de dispositivos e clientes seria de suma importância relevarmos todos os possivéis problemas.  
 
-<A name="Geren"></A>
-# Gerenciamento do Dispositivo
-
-No gerenciamento dos dispositivos, podemos ligá-los, desligá-los e ajustar o brilho, tanto diretamente no arquivo dispositivo.py quanto remotamente no arquivo cliente.py.
-
 <A name="Desem"></A>
 # Desempenho
 
@@ -308,7 +286,7 @@ Quanto à confiabilidade da solução, ou seja, à segurança das conexões quan
      2. Agora execute as imagens usando o comando "docker run --network='host' -it -e IP=ipBroker nome_da_imagem" para executar as imagens do dispositivo e do cliente, já para executar a imagem do broker use "docker run --network='host' -it nome_da_imagem".
 
 <A name="clie"></A>
-# Interface do Cliente
+# Utilizando a Interface
 
 Observe que abaixo seguem algumas Figuras que mostram como a interface CLI se comporta. Vale informar que a entrada está devidamente validada. Observe que a interface do Cliente é o atuador remoto dos Dispositivos e, assim como já mencionado, trabalha em conjunto com o Broker.
 
@@ -319,107 +297,9 @@ Observe que abaixo seguem algumas Figuras que mostram como a interface CLI se co
    
    </div>
 
-  <div align="center">
-   
-   ![Figura 9](Imagens/opcao2cliente.png)
-   <br/> <em>Figura 9. Desligando o Dispositivo.</em> <br/>
-   
-   </div>
-
-   <div align="center">
-   
-   ![Figura 10](Imagens/opcao5cliente1.png)
-   <br/> <em>Figura 10. Opção 5 para visualizar os Dispositivos Conectados e suas informações.</em> <br/>
-   
-   </div>
-
-   <div align="center">
-   
-   ![Figura 11](Imagens/opcao1cliente.png)
-   <br/> <em>Figura 11. Ligando o Dispositivo.</em> <br/>
-   
-   </div>
-
-   <div align="center">
-   
-   ![Figura 12](Imagens/opcao5cliente.png)
-   <br/> <em>Figura 12. Opção 5 para visualizar os Dispositivos Conectados e suas informações.</em> <br/>
-   
-   </div>
-
-   <div align="center">
-   
-   ![Figura 13](Imagens/opcao4cliente.png)
-   <br/> <em>Figura 13. Opção 4 para visualizar os dados de um Dispositivo específico.</em> <br/>
-   
-   </div>
-
-   <div align="center">
-   
-   ![Figura 14](Imagens/opcao3cliente.png)
-   <br/> <em>Figura 14. Mudando o Brilho de certo Dispositivo.</em> <br/>
-   
-   </div>
-
-   <div align="center">
-   
-   ![Figura 15](Imagens/opcao5cliente2.png)
-   <br/> <em>Figura 15. Opção 5 para visualizar os Dispositivos Conectados e suas informações.</em> <br/>
-   
-   </div>
-
-  `Observação:` Note que a essas imagens também demonstram alguns testes no meu arquivo "cliente.py".
-
-<A name="Disp"></A>
-# Interface do Dispositivo
-
-Sobre a interface do Dispositivo, podemos verificar como ela se comporta de acordo com as Figuras a seguir. Além disso, assim como a interface do cliente, também está devidamente validada.
-
-<div align="center">
-   
-   ![Figura 16](Imagens/opcao2dispositivo.png)
-   <br/> <em>Figura 16. Desligando o Dispositivo.</em> <br/>
-   
-   </div>
-
-   <div align="center">
-   
-   ![Figura 17](Imagens/opcao4dispositivo.png)
-   <br/> <em>Figura 17. Opção 4 para visualizad as informações do Dispositivo.</em> <br/>
-   
-   </div>
-
-   <div align="center">
-   
-   ![Figura 18](Imagens/opcao1dispositivo.png)
-   <br/> <em>Figura 18. Ligando o Dispositivo.</em> <br/>
-   
-   </div>
-
-   <div align="center">
-   
-   ![Figura 19](Imagens/opcao4dispositivo1.png)
-   <br/> <em>Figura 19. Opção 4 para visualizar as informações do Dispositivo.</em> <br/>
-   
-   </div>
-
-   <div align="center">
-   
-   ![Figura 20](Imagens/opcao3dispositivo.png)
-   <br/> <em>Figura 20. Mudando o Brilho do Dispositivo.</em> <br/>
-   
-   </div>
-
-   <div align="center">
-   
-   ![Figura 21](Imagens/opcao4dispositivo2.png)
-   <br/> <em>Figura 21. Opção 4 para visualizar as informações do Dispositivo.</em> <br/>
-   
-   </div>
-
-   `Observação:` Note que a essas imagens também demonstram alguns testes no meu arquivo "dispositivo.py".
-   
 <A name="Conc"></A>
 # Conclusão
 
-Enfim, destaco que este projeto atende a todas as exigências previamente propostas e desempenha um papel significativo no aprimoramento das habilidades na área de concorrência e conectividade.
+<p align='justify'>
+Por fim, destaco que este projeto atende a todas as exigências previamente propostas e desempenha um papel significativo no aprimoramento das habilidades na área de concorrência e conectividade. No entanto, há espaço para melhorias futuras, como o desenvolvimento de uma interface web ou mobile.
+</p>
