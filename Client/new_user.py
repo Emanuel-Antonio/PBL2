@@ -298,6 +298,14 @@ def requestTransferencia(dic, id_origem):
     except Exception as e:
         print(f'Não foi possível estabelecer uma conexão com o Bank ... {e}')
 
+def limpar_terminal():
+    # Verifica se o sistema operacional é Windows
+    if os.name == 'nt':
+        os.system('cls')  # Limpa o terminal no Windows
+    else:
+        # Limpa o terminal em sistemas Unix (Linux, macOS, etc.)
+        os.system('clear') 
+
 def main():
     while True:
         user = login(getUsers())

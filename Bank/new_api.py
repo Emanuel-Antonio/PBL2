@@ -143,7 +143,7 @@ def receive_token_route():
 
 ########################################################## Token ####################################################
     
-# Rota para verificar login todos os usuários do Banco
+# Rota para verificar login de todos os usuários do Banco
 @app.route('/login', methods=['POST'])
 def set_login():
     data = request.get_json()
@@ -162,7 +162,7 @@ def get_users():
         users_no_password = [user.copy() for user in users]
         for user in users_no_password:
             del user['senha']
-        return jsonify(users_no_password)
+        return jsonify(users_no_password), 201
 
 # Rota para obter um usuário por ID no Banco
 @app.route('/users/<int:user_id>', methods=['GET'])
@@ -174,7 +174,7 @@ def get_user(user_id):
             print(user, "a")
             if user['id'] == str(user_id):
                 del user['senha']
-                return jsonify(user)
+                return jsonify(user), 201
     return jsonify({'message': 'User não encontrado'}), 401
 
 # Rota para criar um novo usuário no Banco
@@ -212,7 +212,7 @@ def get_accounts(user_id):
         for item in users:
             if item['id'] == user_id:
                 accounts = item['contas']
-                return jsonify(accounts)
+                return jsonify(accounts), 201
         return '', 401
 
 @app.route('/users/<int:user_id>/accounts/<int:account_id>', methods=['GET'])
@@ -240,7 +240,7 @@ def deleteUser(user_id):
     global users
     with lock:
         users = [user for user in users if user['id'] != user_id]
-    return jsonify({'message': 'User excluído com sucesso'})
+    return jsonify({'message': 'User excluído com sucesso'}), 201
 
 # Rota para atualizar um usuário existente
 @app.route('/users/<int:user_id>', methods=['PUT'])
@@ -252,7 +252,7 @@ def updateAccount(user_id):
 
         dataUpdate = request.json
         user.update(dataUpdate)
-    return jsonify(user)
+    return jsonify(user), 201
 
 @app.route('/users/<int:user_id>/accounts/<int:account_id>/deposit', methods=['POST'])
 def deposit(user_id, account_id):
@@ -429,7 +429,7 @@ def main():
         receive_token()
         node_state["pass"] == True
     
-    # Inicializa a thread que verifica e gera o token periodicamente
+    # Inicializa a thread que verifica e passa o token periodicamente
     token_thread_pass = threading.Thread(target=pass_token)
     token_thread_pass.start()
     
