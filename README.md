@@ -149,19 +149,19 @@ A seguir, uma breve descrição de cada função presente no arquivo 'new_user.p
 Para abordar a arquitetura utilizada na interação entre bancos e contas, onde as transações são realizadas de maneira descentralizada, é instrutivo primeiro explicar como essas transações são normalmente efetuadas de modo centralizado, com o auxílio do banco central. Em seguida, podemos explorar a arquitetura descentralizada adotada neste sistema, assim como as soluções implementadas para mitigar os problemas inerentes aos sistemas descentralizados.
 </p>
 
-Sobre a arquitetura utilizada para a troca de mensagens podemos citar a conexão "Dispositivo <-> Broker" e "Broker <-> Cliente". Além disso, utilizamos três componentes, sendo eles: dispositivo, broker e cliente. Note que ambos os componentes possuem uma seção contendo mais detalhes.
-  
-- ***Dispositivo -> Broker:*** A comunicação entre os dispositivos e o broker para o envio de dados foi feita através de sockets, via protocolo TCP/IP. Neste caso, utilizamos o protocolo UDP, pois ao enviarmos dados, a velocidade de envio foi uma prioridade.
+### Sistema de Bancos Centralizado
 
-     `Observação:` Note que a conexão TCP é inicializada pelo dispositivo, permitindo que o broker envie requisições para os dispositivos conectados sem a necessidade de abrir múltiplas conexões pelo broker, o que demandaria a busca por diversos endereços físicos. No entanto, ele não envia dados utilizando TCP.
+<p align="justify">
+Um sistema bancário centralizado envolve o banco central desempenhando um papel crucial na intermediação e controle das transações entre instituições financeiras. Nesse modelo, todas as transações, como transferências de fundos entre bancos e liquidação de pagamentos, são processadas e monitoradas pelo banco central. Isso implica que todas as partes envolvidas dependem diretamente das operações e diretrizes estabelecidas pelo banco central para as suas atividades financeiras. Esse sistema centralizado proporciona um controle rigoroso e uma supervisão eficiente das operações financeiras, mas também pode apresentar desafios como possíveis gargalos de comunicação e vulnerabilidades à falhas sistêmicas.
+</p>
   
-- ***Broker -> Dispositivo:*** A comunicação entre o broker e os dispositivos para o envio de comandos/requisições foi feita, assim como a comunicação do dispositivo com o broker, usando sockets, via protocolo TCP/IP. Porém, ao contrário da comunicação de dados, utilizamos o TCP, a fim de priorizar a segurança do envio de requisições.
+- ***Banco -> Banco e Banco -> Banco Central:*** A comunicação entre bancos para o envio de diversas transações pode ser realizada utilizando API REST, semelhante a qualquer outro tipo de API. As regras e protocolos de comunicação são determinados pelo banco intermediador da transação, que, neste caso, é o banco central.
+
+  `Observação:` Qualquer falha no Banco Central afeta todos os bancos envolvidos, o que também se aplica a falhas de segurança.
    
-- ***Broker <-> Cliente:*** A comunicação entre o broker e o cliente foi realizada por meio de rotas de uma API REST, utilizando verbos como: GET, POST, PUT E DELETE.
-
   `Definição:` Uma API REST (Representational State Transfer) é uma arquitetura de comunicação que utiliza os princípios do protocolo HTTP para permitir a comunicação entre sistemas distribuídos.
 
-Ademais, ainda precisamos falar sobre a ordem que essas comunicações acontecem, para isso observe a <br/> <em>Figura 1.</em> <br/>
+Abaixo você pode ver como se da a interação entre os bancos e o banco cantral, para isso observe a <em>Figura 1.</em> 
 
  <div align="center">
    
@@ -170,7 +170,18 @@ Ademais, ainda precisamos falar sobre a ordem que essas comunicações acontecem
    
    </div>
 
-Analisando a imagem, mais especificamente na parte "Envio de comandos", fica evidente que todas as informações passam pelo broker, independentemente de serem dados ou comandos. Por exemplo, se desejo enviar uma mensagem remotamente do cliente para um dispositivo, devo adicionar o comando à minha API através de uma rota. Em seguida, o broker utilizará o protocolo TCP/IP para enviar o comando ao dispositivo via TCP. Já na parte "Conexão Dispositivo -> Broker", é nos mostrado que o dispositivo inicia a comunicação TCP, a fim de que o broker identifique e armazene as conexões.
+<p align="justify">
+Analisando a imagem, observa-se que toda a comunicação depende do agente central. Em outras palavras, qualquer interação entre os bancos necessariamente envolve o banco central. No entanto, um ponto relevante ao utilizar um sistema bancário centralizado é que ele tende a apresentar menos problemas relacionados à concorrência, e quando surgem problemas, as soluções são geralmente mais simples do que em sistemas distribuídos.
+</p>
+
+### Sistema de Bancos Descentralizados (Utilizado nesta Aplicação)
+
+ <div align="center">
+   
+   ![Figura 1](Images/Diagrama2.png)
+   <br/> <em>Figura 1. Sistema de Bancos Descentralizados.</em> <br/>
+   
+   </div>
 
 <A name="Rest"></A>
 # Interface da Aplicação (REST)
@@ -268,26 +279,32 @@ Quanto à confiabilidade da solução, ou seja, à segurança das conexões quan
 ### 1. Configuração do Ambiente:
 
    - **Requisitos do Sistema:** Será preciso ter ao menos o Docker instalado na máquina para que seja possível criar a imagem e executá-la.
+
+`Observação:` Caso não possua o Docker instalado você poderá executar os arquivos new_api.py e new_user.py via terminal. 
      
 ### 2. Obtenção do Código Fonte:
 
    - **Clonagem do Repositório:** Você pode utilizar o seguinte comando no terminal para adquirir a aplicação:                                          
 
-           git clone https://github.com/Emanuel-Antonio/PBL-Redes.git.
+           git clone https://github.com/Emanuel-Antonio/PBL2-Redes.git.
      
    - **Download do Código Fonte:** Caso não tenha o Git na máquina, você pode fazer o download desse repositório manualmente. Vá até o canto superior, selecione "Code" e depois "Download ZIP", e então extraia o arquivo ZIP na sua máquina.
 
 ### 3. Configuração da Aplicação:
 
-   - **Arquivos de Configuração:** Abra as pastas "Cliente" e "Dispositivo" e altere nos arquivos "cliente.py" e "dispositivo.py" o endereço IP para o endereço da máquina onde o broker esteja rodando.
+   - **Arquivos de Configuração:** Abra as pastas "Bank" e "Client" e altere nos arquivos "new_api.py" e "new_user.py" o endereço IP para o endereço da máquina onde o banco está rodando, banco é representado pelo arquivo new_api.py.
+     
+`Observação:` Execute essa etapa somente se não informar o IP ao rodar a imagem do docker.  
 
 ### 4. Execução da Aplicação:
 
    - **Com Docker:**
      
-     1. Execute o seguinte comando no terminal dentro das pastas Cliente, Dispositivo e Broker: "docker build -t nome_do_arquivo .", para gerar as imagens, repita três vezes.
+     1. Execute o seguinte comando no terminal dentro das pastas Bank e Client: "docker build -t nome_do_arquivo .", para gerar as imagens, repita duas vezes.
         
-     2. Agora execute as imagens usando o comando "docker run --network='host' -it -e IP=ipBroker nome_da_imagem" para executar as imagens do dispositivo e do cliente, já para executar a imagem do broker use "docker run --network='host' -it nome_da_imagem".
+     2. Agora execute as imagens usando o comando "docker run --network='host' -it -e IP=ipBank nome_da_imagem" para executar as imagens do new_api.py e new_user.py.
+
+`Observação:` Se não quiser rodar através do docker execute pelo terminal usando o comando "python arquivo.py", para os dois arquivos antes mencionados.
 
 <A name="clie"></A>
 # Utilizando a Interface
