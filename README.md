@@ -19,6 +19,9 @@ Nos últimos anos, a adoção de movimentações financeiras exclusivamente por 
 - <A href = "#Arq">Arquitetura da solução</A><br>
 - <A href = "#Rest">Interface da Aplicação (REST)</A><br>
 - <A href = "#Pro">Problemáticas e Soluções</A><br>
+  - <A href = "#Rede">Rede em Anel (Token Ring)</A><br>
+  - <A href = "#Lock">Lock </A><br>
+  - <A href = "#2pc">2PC e 2PL</A><br>
 - <A href = "#Desem">Desempenho </A><br>
 - <A href = "#Conf">Confiabilidade da solução </A><br>
 - <A href = "#Exec">Como Executar</A><br>
@@ -197,7 +200,7 @@ Observe que a imagem ilustra que um banco pode se conectar com todos os outros b
 <A name="Rest"></A>
 # Interface da Aplicação (REST)
 
-Em relação a API foram criadas 8 rotas, as quais utilizaram verbos/métodos como POST, PUT, GET e DELETE.
+Em relação a API foram criadas diversas rotas, as quais utilizaram verbos/métodos como POST, PUT, GET e DELETE.
 
 - ***POST:*** Em relação aos métodos POST, temos duas rotas que à utilizam, sendo que um posta dispositivos em minha aplicação e a outra posta requisições, a rota da primeira do dispositivo é "http://{id do broker}//dispositivos" e a rota da requisição é "http://{id do broker}//requisicoes". Podemos ver a estrutura para construção dessas rotas na Figura 2.
   
@@ -237,6 +240,15 @@ Em relação a API foram criadas 8 rotas, as quais utilizaram verbos/métodos co
 
 <A name= "Pro"></A>
 # Problemáticas e Soluções  
+
+<A name= "Rede"></A>
+# Rede em Anel (Token Ring)
+
+<A name= "Lock"></A>
+# Lock
+
+<A name= "2pc"></A>
+# 2PC E 2PL
    
 <A name="Trat"></A>
 # Tratamento de Conexões Simultâneas
