@@ -23,8 +23,8 @@ Nos últimos anos, a adoção de movimentações financeiras exclusivamente por 
   - <A href = "#Lock">Lock </A><br>
   - <A href = "#2pc">2PC e 2PL</A><br>
 - <A href = "#Trat">Tratamento de Conexões Simultâneas</A><br>
-- <A href = "#Teste">Testes</A><br>
 - <A href = "#clie">Utilizando a Interface</A><br>
+- <A href = "#Teste">Testes</A><br>
 - <A href = "#Exec">Como Executar</A><br>
 - <A href = "#Conc">Conclusão</A><br>
 
