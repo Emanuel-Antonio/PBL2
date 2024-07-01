@@ -17,6 +17,7 @@ Nos últimos anos, a adoção de movimentações financeiras exclusivamente por 
 - <A href = "#Api">Api</A><br>
 - <A href = "#Interface">Interface Cli</A><br>
 - <A href = "#Arq">Arquitetura da solução</A><br>
+- <A href = "#Rest"> Interface da Aplicação (REST)</A><br>
 - <A href = "#Desem">Desempenho </A><br>
 - <A href = "#Conf">Confiabilidade da solução </A><br>
 - <A href = "#Exec">Como Executar</A><br>
