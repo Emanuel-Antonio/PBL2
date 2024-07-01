@@ -309,7 +309,7 @@ Quanto à confiabilidade da solução, ou seja, à segurança das conexões quan
 <A name="clie"></A>
 # Utilizando a Interface
 
-Observe que abaixo seguem algumas Figuras que mostram como a interface CLI se comporta. Vale informar que a entrada está devidamente validada. Observe que a interface do Cliente é o atuador remoto dos Dispositivos e, assim como já mencionado, trabalha em conjunto com o Broker.
+Observe que abaixo seguem algumas Figuras que mostram como a interface CLI se comporta. Vale informar que a entrada está devidamente validada.
 
 <div align="center">
    
