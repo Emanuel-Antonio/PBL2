@@ -20,7 +20,7 @@ Nos últimos anos, a adoção de movimentações financeiras exclusivamente por 
 - <A href = "#Desem">Desempenho </A><br>
 - <A href = "#Conf">Confiabilidade da solução </A><br>
 - <A href = "#Exec">Como Executar</A><br>
-- <A href = "#clie">Interface do Cliente</A><br>
+- <A href = "#clie">Utilizando a Interface</A><br>
 - <A href = "#Conc">Conclusão</A><br>
 
 <A name= "Api"></A>
@@ -285,7 +285,7 @@ Quanto à confiabilidade da solução, ou seja, à segurança das conexões quan
      2. Agora execute as imagens usando o comando "docker run --network='host' -it -e IP=ipBroker nome_da_imagem" para executar as imagens do dispositivo e do cliente, já para executar a imagem do broker use "docker run --network='host' -it nome_da_imagem".
 
 <A name="clie"></A>
-# Interface do Cliente
+# Utilizando a Interface
 
 Observe que abaixo seguem algumas Figuras que mostram como a interface CLI se comporta. Vale informar que a entrada está devidamente validada. Observe que a interface do Cliente é o atuador remoto dos Dispositivos e, assim como já mencionado, trabalha em conjunto com o Broker.
 
