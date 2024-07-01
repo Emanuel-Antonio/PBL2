@@ -23,8 +23,9 @@ Nos últimos anos, a adoção de movimentações financeiras exclusivamente por 
   - <A href = "#Lock">Lock </A><br>
   - <A href = "#2pc">2PC e 2PL</A><br>
 - <A href = "#Trat">Tratamento de Conexões Simultâneas</A><br>
-- <A href = "#Exec">Como Executar</A><br>
+- <A href = "#Teste">Testes</A><br>
 - <A href = "#clie">Utilizando a Interface</A><br>
+- <A href = "#Exec">Como Executar</A><br>
 - <A href = "#Conc">Conclusão</A><br>
 
 <A name= "Api"></A>
@@ -268,6 +269,25 @@ Sobre o tratamento de múltiplas conexões, utilizamos threads tanto para recebe
 
 `Observação:` Pelo uso que foi feito dessa aplicação não foi preciso se preocupar com essas questões, contudo para a ampliação de dispositivos e clientes seria de suma importância relevarmos todos os possivéis problemas.  
 
+<A name="clie"></A>
+# Utilizando a Interface
+
+Observe que abaixo seguem algumas Figuras que mostram como a interface CLI se comporta. Vale informar que a entrada está devidamente validada.
+
+<div align="center">
+   
+   ![Figura 8](Imagens/menucliente.png)
+   <br/> <em>Figura 8. Menu Cliente.</em> <br/>
+   
+   </div>
+
+<A name="Teste"></A>
+# Testes
+
+<p align="justify">
+A seguir, serão apresentados uma série de testes realizados utilizando a interface CLI e diretamente através das rotas, utilizando ferramentas como Postman e Thunder Client.
+</p>
+
 <A name="Exec"></A>
 # Como Executar
 
@@ -302,18 +322,6 @@ Sobre o tratamento de múltiplas conexões, utilizamos threads tanto para recebe
      2. Agora execute as imagens usando o comando "docker run --network='host' -it -e IP=ipBank nome_da_imagem" para executar as imagens do new_api.py e new_user.py.
 
 `Observação:` Se não quiser rodar através do docker execute pelo terminal usando o comando "python arquivo.py", para os dois arquivos antes mencionados.
-
-<A name="clie"></A>
-# Utilizando a Interface
-
-Observe que abaixo seguem algumas Figuras que mostram como a interface CLI se comporta. Vale informar que a entrada está devidamente validada.
-
-<div align="center">
-   
-   ![Figura 8](Imagens/menucliente.png)
-   <br/> <em>Figura 8. Menu Cliente.</em> <br/>
-   
-   </div>
 
 <A name="Conc"></A>
 # Conclusão
