@@ -17,17 +17,10 @@ Nos últimos anos, a adoção de movimentações financeiras exclusivamente por 
 - <A href = "#Api">Api</A><br>
 - <A href = "#Interface">Interface Cli</A><br>
 - <A href = "#Arq">Arquitetura da solução</A><br>
-- <A href = "#Apli">Protocolo de comunicação entre dispositivo e Broker - camada de aplicação</A><br>
-- <A href = "#Tran">Protocolo de comunicação entre dispositivo e Broker - camada de transporte</A><br>
-- <A href = "#Rest">Interface da Aplicação </A><br>
-- <A href = "#Form">Formatacao, envio e tratamento de dados</A><br>
-- <A href = "#Trat">Tratamento de conexões simultaneas </A><br>
-- <A href = "#Geren">Gerenciamento do dispositivo</A><br>
 - <A href = "#Desem">Desempenho </A><br>
 - <A href = "#Conf">Confiabilidade da solução </A><br>
 - <A href = "#Exec">Como Executar</A><br>
 - <A href = "#clie">Interface do Cliente</A><br>
-- <A href = "#Disp">Interface do Dispositivo</A><br>
 - <A href = "#Conc">Conclusão</A><br>
 
 <A name= "Api"></A>
@@ -49,39 +42,39 @@ Este arquivo contém as rotas responsáveis pela gerenciamento de transações v
 
   - ***/id:*** Rota GET responsável por fornecer um ID válido para uso em um pacote de transações. Retorna o ID e o código 201 quando bem-sucedido.
 
-   - ***/status:*** Rota GET responsável por verificar o status de um pacote de transações enviado para execução no banco, utilizando o ID da transação recebido no JSON, retorna o código 201 se o pacote foi executado com sucesso e 401 caso contrário.
+  - ***/status:*** Rota GET responsável por verificar o status de um pacote de transações enviado para execução no banco, utilizando o ID da transação recebido no JSON, retorna o código 201 se o pacote foi executado com sucesso e 401 caso contrário.
 
-   - ***/receive_token:*** Rota POST responsável por receber o token de outro banco do consórcio. Retorna o código 200 quando o token é recebido com uma sequência válida. A sequência estará presente no JSON.
+  - ***/receive_token:*** Rota POST responsável por receber o token de outro banco do consórcio. Retorna o código 200 quando o token é recebido com uma sequência válida. A sequência estará presente no JSON.
 
-   - ***/login:*** Rota POST responsável por verificar o usuário e senha enviados pelo JSON. Retorna o código 201 quando as credenciais correspondem aos dados do banco; caso contrário, retorna 401.
+  - ***/login:*** Rota POST responsável por verificar o usuário e senha enviados pelo JSON. Retorna o código 201 quando as credenciais correspondem aos dados do banco; caso contrário, retorna 401.
 
-   - ***/users:*** Rota GET responsável por pegar os dados de todos os usuários do banco. Retorna 201 quando executado adequandamente. Vale informar que por segurança nenhum retorno da API retorna dados de senha.
+  - ***/users:*** Rota GET responsável por pegar os dados de todos os usuários do banco. Retorna 201 quando executado adequandamente. Vale informar que por segurança nenhum retorno da API retorna dados de senha.
 
-   - ***/users/user_id:*** Rota GET responsável por pegar os dados de um usuário específico, através do user_id. Retorna 201 quando executado adequandamente e 401 caso contrário.
+  - ***/users/user_id:*** Rota GET responsável por pegar os dados de um usuário específico, através do user_id. Retorna 201 quando executado adequandamente e 401 caso contrário.
 
-   - ***/users:*** Rota POST responsável por criar um usuário no banco. Retorna 201 quando executado adequandamente.
+  - ***/users:*** Rota POST responsável por criar um usuário no banco. Retorna 201 quando executado adequandamente.
 
-   - ***/users/user_id/accounts:*** Rota POST responsável por postar uma nova conta a um usuário existente, através do parametro user_id. Retorna 201 quando executado adequandamente e 401 caso contrário.
+  - ***/users/user_id/accounts:*** Rota POST responsável por postar uma nova conta a um usuário existente, através do parametro user_id. Retorna 201 quando executado adequandamente e 401 caso contrário.
 
-   - ***/users/user_id/accounts:*** Rota GET responsável por pegar todas as contas de um usuário específico, através do user_id. Retorna 201 quando executado adequandamente e 401 caso contrário.
+  - ***/users/user_id/accounts:*** Rota GET responsável por pegar todas as contas de um usuário específico, através do user_id. Retorna 201 quando executado adequandamente e 401 caso contrário.
 
-   - ***/users/user_id/accounts/account_id:*** Rota GET responsável por pegar uma conta específico, através do user_id e account_id. Retorna 201 quando executado adequandamente e 401 caso contário.
+  - ***/users/user_id/accounts/account_id:*** Rota GET responsável por pegar uma conta específico, através do user_id e account_id. Retorna 201 quando executado adequandamente e 401 caso contário.
 
-   - ***/users/user_id:*** Rota DELETE responsável por deletar um usuário específico, através do user_id. Retorna 201 quando executado adequandamente.
+  - ***/users/user_id:*** Rota DELETE responsável por deletar um usuário específico, através do user_id. Retorna 201 quando executado adequandamente.
 
-   - ***/users/user_id:*** Rota PUT responsável por atualizar um usuário específico, através do user_id. Seu retorno é 201 para atualizado com sucesso e 401 caso contrário.
+  - ***/users/user_id:*** Rota PUT responsável por atualizar um usuário específico, através do user_id. Seu retorno é 201 para atualizado com sucesso e 401 caso contrário.
 
-   - ***/users/user_id/accounts/account_id/deposit:*** Rota responsável por realizar um deposito em uma conta especificada pelo user_id e account_id. O JSON só indica o valor a ser depositado. Como as outras rotas, o retorno 201 representa que a operação foi bem sucedida e 401 representa o oposto.
+  - ***/users/user_id/accounts/account_id/deposit:*** Rota responsável por realizar um deposito em uma conta especificada pelo user_id e account_id. O JSON só indica o valor a ser depositado. Como as outras rotas, o retorno 201 representa que a operação foi bem sucedida e 401 representa o oposto.
 
-   - ***/users/user_id/accounts/account_id/take:*** Rota responsável por realizar um saque em uma conta especificada pelo user_id e account_id. O JSON indica apenas o valor do saque. Assim como nas outras rotas, retorna o código 201 quando executado adequadamente e 401 caso contrário.
+  - ***/users/user_id/accounts/account_id/take:*** Rota responsável por realizar um saque em uma conta especificada pelo user_id e account_id. O JSON indica apenas o valor do saque. Assim como nas outras rotas, retorna o código 201 quando executado adequadamente e 401 caso contrário.
 
-   - ***/sender:*** Rota responsável por adicionar o valor transferido à conta de destino, utilizando o ID e o valor recebidos do JSON. Ademais, retorna o código 201 se a operação for bem-sucedida e 401 caso contrário.
+  - ***/sender:*** Rota responsável por adicionar o valor transferido à conta de destino, utilizando o ID e o valor recebidos do JSON. Ademais, retorna o código 201 se a operação for bem-sucedida e 401 caso contrário.
 
-   - ***/abort:*** Rota responsável por reverter uma transação de um pacote. Ela utiliza do ID e valor recebido para realizar essa operação e retorna o código 201 se a reversão for bem-sucedida e 401 caso contrário.
+  - ***/abort:*** Rota responsável por reverter uma transação de um pacote. Ela utiliza do ID e valor recebido para realizar essa operação e retorna o código 201 se a reversão for bem-sucedida e 401 caso contrário.
 
-   - ***/recipient:*** Rota responsável por receber um valor e um ID, e realizar o débito desse valor no saldo da conta associada a esse ID. Vale ressaltar que seu retorno é 201 quando executada corretamente e 401 caso contrário.
+  - ***/recipient:*** Rota responsável por receber um valor e um ID, e realizar o débito desse valor no saldo da conta associada a esse ID. Vale ressaltar que seu retorno é 201 quando executada corretamente e 401 caso contrário.
 
-   - ***/transfers:*** Rota responsável por receber pacotes de transações da interface CLI a qualquer momento e armazená-los na lista de transferências. Se executada adequadamente, retorna o código 201; caso contrário, retorna 401.
+  - ***/transfers:*** Rota responsável por receber pacotes de transações da interface CLI a qualquer momento e armazená-los na lista de transferências. Se executada adequadamente, retorna o código 201; caso contrário, retorna 401.
      
 ### Funções
 
@@ -102,40 +95,51 @@ Este arquivo contém as rotas responsáveis pela gerenciamento de transações v
   - ***init_server_flask():*** Esta função é responsável por inicializar a aplicação Flask.
 
   - ***main():*** Por último, esta função, como o próprio nome indica, é responsável pela ordem de execução das outras funções e rotas. Neste arquivo, ela é concisa, focando na inicialização das threads para passagem de token, verificação de token e da API do banco.
+
+   `Observação:` Vale ressaltar que boa parte dessas funções possuem um bloco try-catch, visto que realizam operações delicadas. Mais detalhes podem ser encontrados na documentação do código.
     
 <A name= "Interface"></A>
 # Interface Cli
 
-O dispositivo serve para simular um componente IoT. Neste projeto, ele é uma lâmpada que pode ser ligada, desligada ou ter seu brilho alterado remotamente.
+<p align='justify'>
+A interface CLI permite que o usuário acesse as funcionalidades do banco. Para isso, o arquivo da interface utiliza requisições HTTP para interagir com o servidor do banco.
+</p>
 
 ## Arquivo Principal (new_user.py)
 
-- ***limpar_terminal():*** Esta função tem como responsabilidade limpar o terminal. Para isso, ela verifica o sistema operacional para determinar qual função utilizar. Isto pois para limpar o terminal no "Windows" é diferente de limpar no "Linux".
+<p align='justify'>
+A seguir, uma breve descrição de cada função presente no arquivo 'new_user.py', que representa nossa interface CLI.
+</p>
+
+  - ***login(users):*** Esta função é responsável por realizar o login ou criar uma nova conta. No processo de login, utiliza a lista de usuários fornecida como parâmetro. O retorno são os dados do usuário logado.
+
+  - ***createAccount(id, name, age, password, tipo, pix):*** Esta função é responsável por realizar a criação de uma conta dentro do banco. Os parâmetros da função representam os dados necessários para essa criação de conta.
+
+  - ***verificarLogin(id, password):*** Esta função é responsável por verificar o login de um usuário em sua conta bancária, através de uma rota POST,  utilizando os parâmetros id e password.
+
+  - ***addBank(id, saldo, password):*** Esta função tem como objetivo adicionar uma nova conta bancária a um usuário existente dentro do banco através de uma requisição POST. Os parâmetros incluem os dados dessa nova conta.
+
+  - ***getUsers():*** Esta função é responsável por obter os dados de todos os usuário do banco. O retorno da função é a lista de usuários.
+
+  - ***getUser(id):*** Esta função é responsável por obter os dados de um usuário do banco através de uma requisição GET. O parâmetro id é utilizado para buscar esse usuário no servidor do banco e o retorno é um dicionário com os dados do usuário.
+
+  - ***logged(user):*** Esta função tem como propósito oferecer uma série de opções quando o usuário já estiver logado em sua conta no banco. As opções incluem: realizar transação, depósito, saque, sair, entre outras. O parâmetro user armazena os dados de conta do usuário.
+
+  - ***verStatus(id):*** Esta função tem como objetivo realizar um GET no servidor do banco para verificar o status do último pacote de transações enviado pela interface. O parâmetro id representa o id do pacote de transações para fazer a verificação no banco.
+
+  - ***getTransId():*** Esta função tem como objetivo realizar um GET de um ID válido no servidor do banco para adicionar a uma transação que está sendo criada. O retorno da função será esse ID.
+
+  - ***requestSaque(valor, id, conta):*** Esta função é responsável por realizar o POST de um saque em uma conta especificada pelos parâmetros da função. Os parâmetros incluem o valor a ser sacado, o ID do usuário e a chave PIX da conta.
+
+  - ***requestDeposito(valor, id, conta):*** Esta função é responsável por realizar o POST de um depósito em uma conta especificada pelos parâmetros da função. Os parâmetros incluem o valor a ser depositado, o ID do usuário e a chave PIX da conta.
+
+  - ***requestTransferencia(dic, id_origem):*** Esta função tem como propósito realizar o POST de um pacote de transações no servidor do banco por meio de rotas HTTP. A rota utilizada é "/transfers". Os parâmetros da função representam o dicionário que será enviado e o id_origem, que identifica a conta que realizará o pacote de transferências.
+
+  - ***limpar_terminal():*** Esta função tem como responsabilidade limpar o terminal. Para isso, ela verifica o sistema operacional para determinar qual função utilizar. Isto pois para limpar o terminal no "Windows" é diferente de limpar no "Linux".
+
+  - ***main():*** Esta função é responsável por definir as regras de negócio do programa, estabelecendo a ordem de execução das funções e procedimentos presentes no sistema.
 
    `Observação:` Vale ressaltar que boa parte dessas funções possuem um bloco try-catch, visto que realizam operações delicadas. Mais detalhes podem ser encontrados na documentação do código.
-  
-<A name= "Cliente"></A>
-# Cliente
-
-O cliente serve para simular uma interface de controle remoto, a qual pode enviar comandos para vários dispositivos com o auxílio do Broker. Observe que essa interface é uma interface de linha de comando (CLI) e não gráfica.
-
-## Arquivo Principal (cliente.py)
-
-- ***main():*** Essa função será responsável pela execução geral do código, incluindo a exibição do menu, a espera de entradas e o encaminhamento de requisições e solicitações para outras funções.
-
-- ***enviarRequisicao(num, comando):*** Esta outra função, como o próprio nome indica, realiza o envio de requisições para a API, utilizando o método POST. Além disso, ela recebe os argumentos num e comando, que representam o identificador (ID) do dispositivo e o comando a ser enviado, respectivamente.
-
-- ***verificaDados():*** Esta função tem como responsabilidade utilizar o método GET para adquirir os dados dos dispositivos, através da API.
-
-- ***limpar_terminal():*** Esta função tem como responsabilidade limpar o terminal. Para isso, ela verifica o sistema operacional para determinar qual função utilizar. Isto pois para limpar o terminal no "Windows" é diferente de limpar no "Linux".
-
-  `Observação:` Vale ressaltar que boa parte dessas funções também possuem um bloco try-catch, visto que realizam operações delicadas. Mais detalhes podem ser encontrados na documentação do código.
-
-# Tecnologias utilizadas
-
-- ***Ferramantas:*** Para o desenvolvimento desta aplicação, utilizamos ferramentas como Insomnia e Visual Studio Code.
-
-- ***Outras:*** Para a produção do código fonte, utilizamos a linguagem de programação Python, além de algumas bibliotecas dessa linguagem, tais como requests, Flask, etc.
 
 <A name="Arq"></A>
 # Arquitetura da solução
