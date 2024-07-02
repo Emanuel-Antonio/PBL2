@@ -315,11 +315,37 @@ Desenvolver uma aplicação de bancos distribuídos apresenta uma série de desa
 <p align="Justify">
 Este projeto aplicou diferentes soluções para enfrentar os desafios mencionados anteriormente. Foram utilizados locks para lidar com a concorrência entre contas dentro do mesmo banco. Além disso, foi implementada uma estrutura de rede em anel para o consórcio, o que permitiu atribuir uma coordenação e ordem às transações entre diferentes bancos, evitando conflitos de operações externas que poderiam interferir nas operações de outros bancos.
 
-Para garantir a atomicidade das transações no pacote de transações, foram empregados os protocolos Two-Phase Commit (2PC) e Two-Phase Locking (2PL). Para mais detalhes sobre a implementação dessas soluções, é possível analisar o código-fonte do projeto. Abaixo, vou discorrer um pouco mais sobre cada uma dessas abordagens.
+Para garantir a atomicidade das transações no pacote de transações, foi empregado o protocolo Two-Phase Commit (2PC). Para mais detalhes sobre a implementação dessas soluções, é possível analisar o código-fonte do projeto. Abaixo, vou discorrer um pouco mais sobre cada uma dessas abordagens.
 </p>
 
 <A name= "Rede"></A>
 # Rede em Anel (Token Ring)
+
+O Token Ring é uma arquitetura de rede de computadores que utiliza um token (ou ficha) para controlar o acesso aos recursos compartilhados entre os dispositivos conectados. Abaixo estão os principais pontos sobre o Token Ring:
+
+### Funcionamento do Token Ring:
+
+1 - Topologia de Rede:
+
+  - Os dispositivos são organizados em um anel físico ou lógico fechado, onde cada dispositivo está conectado diretamente aos seus vizinhos imediatos.
+A transmissão de dados ocorre sequencialmente de um dispositivo para o próximo, formando um caminho unidirecional ao redor do anel.
+
+2 - Token Passante:
+
+  - Um token (ou ficha) circula continuamente ao redor do anel, permitindo que dispositivos transmitam dados apenas quando possuem o token.
+O dispositivo que possui o token tem permissão exclusiva para enviar dados, enquanto os demais dispositivos apenas encaminham o token para o próximo na sequência.
+
+3 - Controle de Acesso ao Meio:
+
+  - O Token Ring oferece um método eficiente para controlar o acesso ao meio de transmissão (o anel), minimizando colisões de dados e garantindo um fluxo ordenado de comunicação.
+
+### Vantagens do Token Ring:
+
+  - Baixa Colisão de Dados: Como o token controla o acesso ao meio, há menos probabilidade de colisões de dados em comparação com outras topologias.
+
+  - Eficiência em Ambientes de Tráfego Pesado: O Token Ring pode ser mais eficiente do que Ethernet em ambientes onde há um alto volume de tráfego de dados, devido à sua capacidade de gerenciar o acesso ao meio de forma ordenada.
+
+`Observação:` Nesta aplicação, são implementadas estratégias inspiradas na estrutura do Token Ring, incluíndo até a regeneração do token na rede, em certas circunstâncias.
 
 <A name= "Lock"></A>
 # Lock
