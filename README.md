@@ -27,6 +27,7 @@ Nos últimos anos, a adoção de movimentações financeiras exclusivamente por 
 - <A href = "#clie">Utilizando a Interface</A><br>
 - <A href = "#Teste">Testes</A><br>
 - <A href = "#Exec">Como Executar</A><br>
+- <A href = "#Res">Perguntas e Respostas</A><br>
 - <A href = "#Conc">Conclusão</A><br>
 
 <A name= "Api"></A>
@@ -582,6 +583,10 @@ A seguir, serão apresentados uma série de testes realizados utilizando as rota
      2. Agora execute as imagens usando o comando "docker run --network='host' -it -e IP=ipBank nome_da_imagem" para executar as imagens do new_api.py e new_user.py.
 
 `Observação:` Se não quiser rodar através do docker execute pelo terminal usando o comando "python arquivo.py", para os dois arquivos antes mencionados.
+
+<A name="Res"></A>
+# Perguntas e Respostas
+
 
 <A name="Conc"></A>
 # Conclusão
