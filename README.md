@@ -202,7 +202,7 @@ Observe que a imagem ilustra que um banco pode se conectar com todos os outros b
 
 Em relação a API foram criadas diversas rotas, as quais utilizaram verbos/métodos como POST, PUT, GET e DELETE.
 
-- ***POST:*** Em relação aos métodos POST, temos dez rotas que à utilizam, . Podemos ver a estrutura para construção dessas rotas na Figura 3, 4, 5, 6, 7 e 8.
+- ***POST:*** Em relação aos métodos POST, temos dez rotas que à utilizam. Podemos ver a estrutura para construção dessas rotas na Figura 3, 4, 5, 6, 7 e 8.
   
   <div align="center">
    
