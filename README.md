@@ -189,7 +189,7 @@ Analisando a imagem, observa-se que toda a comunicação depende do agente centr
  <div align="center">
    
    ![Figura 1](Images/Diagrama2.png)
-   <br/> <em>Figura 1. Sistema de Bancos Descentralizados.</em> <br/>
+   <br/> <em>Figura 2. Sistema de Bancos Descentralizados.</em> <br/>
    
    </div>
 
@@ -202,39 +202,88 @@ Observe que a imagem ilustra que um banco pode se conectar com todos os outros b
 
 Em relação a API foram criadas diversas rotas, as quais utilizaram verbos/métodos como POST, PUT, GET e DELETE.
 
-- ***POST:*** Em relação aos métodos POST, temos dez rotas que à utilizam, sendo que um posta dispositivos em minha aplicação e a outra posta requisições, a rota da primeira do dispositivo é "http://{id do broker}//dispositivos" e a rota da requisição é "http://{id do broker}//requisicoes". Podemos ver a estrutura para construção dessas rotas na Figura 2.
+- ***POST:*** Em relação aos métodos POST, temos dez rotas que à utilizam. Podemos ver a estrutura para construção dessas rotas na Figura 3, 4, 5, 6, 7 e 8.
   
   <div align="center">
    
-   ![Figura 2](Imagens/POST.png)
-   <br/> <em>Figura 2. Métodos POST.</em> <br/>
+   ![Figura 2](Images/POST0.png)
+   <br/> <em>Figura 3. Métodos POST.</em> <br/>
    
    </div>
 
-- ***PUT:*** Só há uma rota que utiliza este método, tal rota se chama "http://{id do broker}//dispositivo/{id do dispositivo}". Vale lembrar que essa método realiza atualizações na minha API. Mais detalhes na Figura 3.
-
-<div align="center">
+   <div align="center">
    
-   ![Figura 3](Imagens/PUT.png)
-   <br/> <em>Figura 3. Método PUT.</em> <br/>
+   ![Figura 2](Images/POST1.png)
+   <br/> <em>Figura 4. Métodos POST.</em> <br/>
    
    </div>
 
-- ***GET:*** Já em relação aos métodos GET utilizados, temos 6, os quais são dois para dispositivos e um para requisições. As do dispositivo são as rotas "http://{id do broker}//dispositivos/{id do dispositivo}" para acessar os dados de um único dispositivo e "http://{id do broker}//dispositivos" para acessar os dados de todos os dispositivos. A rota de requisições é "http://{id do broker}//requisicoes". Podemos ver mais detalhes na Figura 4.
-
-<div align="center">
+   <div align="center">
    
-   ![Figura 4](Imagens/GET.png)
-   <br/> <em>Figura 4. Métodos GET.</em> <br/>
+   ![Figura 2](Images/POST2.png)
+   <br/> <em>Figura 5. Métodos POST.</em> <br/>
    
    </div>
 
-- ***DELETE:*** Por fim os métodos DELETE, temos somente 1, assim como os métodos POST, sendo um para dispositivos e outro para requisições, cujas rotas são "http://{id do broker}//dispositivo/{id do dispositivo}" e "http://{id do broker}//requisicoes/{id da requisição}". Para mais detalhes observe a Figura 5.
+   <div align="center">
+   
+   ![Figura 2](Images/POST3.png)
+   <br/> <em>Figura 6. Métodos POST.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 2](Images/POST4.png)
+   <br/> <em>Figura 7. Método POST.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 2](Images/POST5.png)
+   <br/> <em>Figura 8. Método POST.</em> <br/>
+   
+   </div>
+
+- ***PUT:*** Só há uma rota que utiliza este método, tal rota se chama "http://{id do banco junto com a porta}/users/{id do usuário}". Vale lembrar que essa método realiza atualizações na minha API. Mais detalhes na Figura 9.
 
 <div align="center">
    
-   ![Figura 5](Imagens/DELETE.png)
-   <br/> <em>Figura 5. Métodos DELETE.</em> <br/>
+   ![Figura 3](Images/PUT.png)
+   <br/> <em>Figura 9. Método PUT.</em> <br/>
+   
+   </div>
+
+- ***GET:*** Já em relação aos métodos GET utilizados, temos 6, os quais são dois para transações e 4 para usuários e contas. As referêntes a transação são as rotas "http://{id do banco junto com a porta}/id" e "http://{id do banco junto com a porta}/status". Já as outras rotas são referêntes as contas e usuários do banco, sendo elas: "http://{id do banco junto com a porta}/users", "http://{id do banco junto com a porta}/users/{id do usuário}", "http://{id do banco junto com a porta}/users/{id do usuário}/accounts" e "http://{id do banco junto com a porta}/users/{id do usuário}/accounts/{id da conta}" , respectivamente. Podemos ver mais detalhes nas Figuras 10, 11 e 12.
+
+<div align="center">
+   
+   ![Figura 4](Images/GET0.png)
+   <br/> <em>Figura 10. Métodos GET.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 4](Images/GET1.png)
+   <br/> <em>Figura 11. Métodos GET.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 4](Images/GET2.png)
+   <br/> <em>Figura 12. Métodos GET.</em> <br/>
+   
+   </div>
+
+- ***DELETE:*** Por fim os métodos DELETE, temos somente 1, assim como os método PUT, , cuja rota é "http://{id do banco junto com a porta}/users/{id do usuário}". Para mais detalhes observe a Figura 13.
+
+<div align="center">
+   
+   ![Figura 5](Images/DELETE.png)
+   <br/> <em>Figura 13. Métodos DELETE.</em> <br/>
    
    </div>
 
