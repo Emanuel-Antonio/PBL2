@@ -10,6 +10,7 @@ bank = "192.168.1.104"
 
 def login(users):
     global bank
+    limpar_terminal()
     print("------------------------------")
     print(" 1 - Entrar\n 2 - Criar conta\n ")
     opcao = int(input("===>"))
@@ -145,7 +146,8 @@ def getUser(id):
     return consumed_messsage        
     
 def logged(user):
-    while True:    
+    while True:  
+        limpar_terminal()
         try:
             user = getUser(user['id'])
             print(f"==============================================================\nTitular: {user['nome']}\nSaldo: {user['contas'][0]['saldo']}\nChave Pix: {user['id']}")
