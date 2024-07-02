@@ -389,6 +389,123 @@ Observe que abaixo seguem algumas Figuras que mostram como a interface CLI se co
 A seguir, serão apresentados uma série de testes realizados utilizando a interface CLI e diretamente através das rotas, utilizando ferramentas como Postman e Thunder Client.
 </p>
 
+<div align="center">
+
+<p align="justify">
+As Figuras 22 e 23 ilustram a correta passagem do token. Note que a sequência que chega a um servidor é sempre diferente daquela que chega a outro servidor. Esse teste foi realizado para evitar a duplicação do token na rede.
+  </p>
+   
+   ![Figura 22](Images/Token1.png)
+   <br/> <em>Figura 22. Visualização da Passagem de Token pelos Bancos do Consórcio.</em> <br/>
+   
+   </div>
+
+  <div align="center">
+   
+   ![Figura 23](Images/Token0.png)
+   <br/> <em>Figura 23. Visualização da Passagem de Token pelos Bancos do Consórcio.</em> <br/>
+   
+   </div>
+
+<p align="justify">
+A Figura 24 ilustra a reeleição do token na rede quando ele se perde. Considera-se o token perdido quando um servidor fica sem recebê-lo por um determinado período de tempo.
+</p>
+
+<div align="center">
+   
+   ![Figura 24](Images/ReeleicaoToken.png)
+   <br/> <em>Figura 24. Visualização da Reeleição do Token na rede quando ele se perde.</em> <br/>
+   
+   </div>
+
+<p align="justify">
+As Figuras 25 e 26, servem para ilustrar os dados das contas antes da execução dos testes ilustrados pela Figura 27 e 28, que rodaram no mesmo momento atrves do uso do Flows do Postman que pode ser visto na Figura 29. O resultado desse Teste pode ser visto nas Figuras 30 e 31
+</p>
+
+  <div align="center">
+   
+   ![Figura 25](Images/Status0.png)
+   <br/> <em>Figura 25. Visualização da Regeneração do Token na rede quando ele se perde.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 26](Images/Status1.png)
+   <br/> <em>Figura 26. Visualização da Regeneração do Token na rede quando ele se perde.</em> <br/>
+   
+   </div>
+
+<div align="center">
+   
+   ![Figura 27](Images/req1.png)
+   <br/> <em>Figura 27. Visualização da Regeneração do Token na rede quando ele se perde.</em> <br/>
+   
+   </div>
+
+<div align="center">
+   
+   ![Figura 28](Images/req2.png)
+   <br/> <em>Figura 28. Visualização da Regeneração do Token na rede quando ele se perde.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 29](Images/Flows.png)
+   <br/> <em>Figura 29. Visualização da Regeneração do Token na rede quando ele se perde.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 30](Images/Status2.png)
+   <br/> <em>Figura 30. Visualização da Regeneração do Token na rede quando ele se perde.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 31](Images/Status3.png)
+   <br/> <em>Figura 31. Visualização da Regeneração do Token na rede quando ele se perde.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 32](Images/Status4.png)
+   <br/> <em>Figura 32. Visualização da Regeneração do Token na rede quando ele se perde.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 33](Images/Status5.png)
+   <br/> <em>Figura 33. Visualização da Regeneração do Token na rede quando ele se perde.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 34](Images/Status6.png)
+   <br/> <em>Figura 34. Visualização da Regeneração do Token na rede quando ele se perde.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 35](Images/PacoteValido.png)
+   <br/> <em>Figura 35. Visualização da Regeneração do Token na rede quando ele se perde.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 36](Images/FalhaPacote.png)
+   <br/> <em>Figura 36. Visualização da Regeneração do Token na rede quando ele se perde.</em> <br/>
+   
+   </div>
+
 <A name="Exec"></A>
 # Como Executar
 
