@@ -255,7 +255,7 @@ Em relação a API foram criadas diversas rotas, as quais utilizaram verbos/mét
    
    </div>
 
-- ***GET:*** Já em relação aos métodos GET utilizados, temos 6, os quais são dois para dispositivos e um para requisições. As do dispositivo são as rotas "http://{id do broker}//dispositivos/{id do dispositivo}" para acessar os dados de um único dispositivo e "http://{id do broker}//dispositivos" para acessar os dados de todos os dispositivos. A rota de requisições é "http://{id do broker}//requisicoes". Podemos ver mais detalhes na Figura 4.
+- ***GET:*** Já em relação aos métodos GET utilizados, temos 6, os quais são dois para transações e 4 para usuários e contas. As referêntes a transação são as rotas "http://{id do banco junto com a porta}/id" e "http://{id do banco junto com a porta}/status". Já as outras rotas são referêntes as contas e usuários do banco, sendo elas: "http://{id do banco junto com a porta}/users", "http://{id do banco junto com a porta}/users/{id do usuário}", "http://{id do banco junto com a porta}/users/{id do usuário}/accounts" e "http://{id do banco junto com a porta}/users/{id do usuário}/accounts/{id da conta}" , respectivamente. Podemos ver mais detalhes nas Figuras a, b e c.
 
 <div align="center">
    
