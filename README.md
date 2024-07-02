@@ -322,14 +322,65 @@ Sobre o tratamento de múltiplas conexões, utilizamos threads tanto para recebe
 <A name="clie"></A>
 # Utilizando a Interface
 
-Observe que abaixo seguem algumas Figuras que mostram como a interface CLI se comporta. Vale informar que a entrada está devidamente validada.
+Observe que abaixo seguem algumas Figuras que mostram como a interface CLI se comporta.
 
 <div align="center">
    
-   ![Figura 8](Imagens/menucliente.png)
-   <br/> <em>Figura 8. Menu Cliente.</em> <br/>
+   ![Figura 14](Images/cli0.png)
+   <br/> <em>Figura 14. Interface Cli para Criação de Conta ou Login.</em> <br/>
    
    </div>
+
+  <div align="center">
+   
+   ![Figura 15](Images/cli1.png)
+   <br/> <em>Figura 15. Criação de Conta.</em> <br/>
+   
+   </div>
+
+<div align="center">
+   
+   ![Figura 16](Images/cli7.png)
+   <br/> <em>Figura 16. Login em Conta.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 17](Images/cli2.png)
+   <br/> <em>Figura 17. Interface Cli Quando Logado.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 18](Images/cli3.png)
+   <br/> <em>Figura 18. Tentativa de Depósito.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 19](Images/cli4.png)
+   <br/> <em>Figura 19. Visualização do Saldo após Depósito.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 20](Images/cli5.png)
+   <br/> <em>Figura 20. Tentativa de Saque.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 21](Images/cli6.png)
+   <br/> <em>Figura 21. Visualização do Saldo após saque e Tentativa de Criação de um Pacote de Transações.</em> <br/>
+   
+   </div>
+   
+`Observação:` Para essa seção não se estender muito, na parte da interface referente ao pacote de transações, quando digitar 1, você irá adicionar outra transação ao pacote; e, se digitar 2, o pacote de transações será enviado para ser executado pelo servidor do banco.
 
 <A name="Teste"></A>
 # Testes
