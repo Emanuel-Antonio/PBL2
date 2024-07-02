@@ -206,8 +206,43 @@ Em relação a API foram criadas diversas rotas, as quais utilizaram verbos/mét
   
   <div align="center">
    
-   ![Figura 2](Imagens/POST.png)
+   ![Figura 2](Images/POST0.png)
    <br/> <em>Figura 2. Métodos POST.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 2](Images/POST1.png)
+   <br/> <em>Figura 2. Métodos POST.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 2](Images/POST2.png)
+   <br/> <em>Figura 2. Métodos POST.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 2](Images/POST3.png)
+   <br/> <em>Figura 2. Métodos POST.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 2](Images/POST4.png)
+   <br/> <em>Figura 2. Método POST.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 2](Images/POST5.png)
+   <br/> <em>Figura 2. Método POST.</em> <br/>
    
    </div>
 
@@ -215,7 +250,7 @@ Em relação a API foram criadas diversas rotas, as quais utilizaram verbos/mét
 
 <div align="center">
    
-   ![Figura 3](Imagens/PUT.png)
+   ![Figura 3](Images/PUT.png)
    <br/> <em>Figura 3. Método PUT.</em> <br/>
    
    </div>
@@ -224,16 +259,30 @@ Em relação a API foram criadas diversas rotas, as quais utilizaram verbos/mét
 
 <div align="center">
    
-   ![Figura 4](Imagens/GET.png)
+   ![Figura 4](Images/GET0.png)
    <br/> <em>Figura 4. Métodos GET.</em> <br/>
    
    </div>
 
-- ***DELETE:*** Por fim os métodos DELETE, temos somente 1, assim como os métodos POST, sendo um para dispositivos e outro para requisições, cujas rotas são "http://{id do broker}//dispositivo/{id do dispositivo}" e "http://{id do broker}//requisicoes/{id da requisição}". Para mais detalhes observe a Figura 5.
+   <div align="center">
+   
+   ![Figura 4](Images/GET1.png)
+   <br/> <em>Figura 4. Métodos GET.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 4](Images/GET2.png)
+   <br/> <em>Figura 4. Métodos GET.</em> <br/>
+   
+   </div>
+
+- ***DELETE:*** Por fim os métodos DELETE, temos somente 1, assim como os métodos POST, , cujas rotas são "http://{id do broker}//dispositivo/{id do dispositivo}" e "http://{id do broker}//requisicoes/{id da requisição}". Para mais detalhes observe a Figura 5.
 
 <div align="center">
    
-   ![Figura 5](Imagens/DELETE.png)
+   ![Figura 5](Images/DELETE.png)
    <br/> <em>Figura 5. Métodos DELETE.</em> <br/>
    
    </div>
