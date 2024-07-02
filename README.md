@@ -17,11 +17,15 @@ Nos últimos anos, a adoção de movimentações financeiras exclusivamente por 
 - <A href = "#Api">Api</A><br>
 - <A href = "#Interface">Interface Cli</A><br>
 - <A href = "#Arq">Arquitetura da solução</A><br>
-- <A href = "#Rest"> Interface da Aplicação (REST)</A><br>
-- <A href = "#Desem">Desempenho </A><br>
-- <A href = "#Conf">Confiabilidade da solução </A><br>
-- <A href = "#Exec">Como Executar</A><br>
+- <A href = "#Rest">Interface da Aplicação (REST)</A><br>
+- <A href = "#Pro">Problemáticas e Soluções</A><br>
+  - <A href = "#Trat">Tratamento de Conexões Simultâneas</A><br>
+    - <A href = "#Rede">Rede em Anel (Token Ring)</A><br>
+    - <A href = "#Lock">Lock </A><br>
+    - <A href = "#2pc">2PC e 2PL</A><br>
 - <A href = "#clie">Utilizando a Interface</A><br>
+- <A href = "#Teste">Testes</A><br>
+- <A href = "#Exec">Como Executar</A><br>
 - <A href = "#Conc">Conclusão</A><br>
 
 <A name= "Api"></A>
@@ -37,7 +41,7 @@ A API atua como servidor para um banco específico, permitindo aos usuários ace
 Este arquivo contém as rotas responsáveis pela gerenciamento de transações via token e pela realização de transações bancárias. Ele implementa métodos HTTP POST, GET, PUT e DELETE para operações específicas. Abaixo estão detalhadas as funcionalidades de cada rota e função desse arquivo.
 </p>
 
- `Observação:` Vale ressaltar que a dinâmica de utilização do token para o gerenciamento de transações será abordada na subseção "Rede em Anel" da seção "Concorrência".
+ `Observação:` Vale ressaltar que a dinâmica de utilização do token para o gerenciamento de transações será abordada na subseção "Rede em Anel" da seção "Problemáticas e Soluções".
  
 ### Rotas
 
@@ -149,19 +153,19 @@ A seguir, uma breve descrição de cada função presente no arquivo 'new_user.p
 Para abordar a arquitetura utilizada na interação entre bancos e contas, onde as transações são realizadas de maneira descentralizada, é instrutivo primeiro explicar como essas transações são normalmente efetuadas de modo centralizado, com o auxílio do banco central. Em seguida, podemos explorar a arquitetura descentralizada adotada neste sistema, assim como as soluções implementadas para mitigar os problemas inerentes aos sistemas descentralizados.
 </p>
 
-Sobre a arquitetura utilizada para a troca de mensagens podemos citar a conexão "Dispositivo <-> Broker" e "Broker <-> Cliente". Além disso, utilizamos três componentes, sendo eles: dispositivo, broker e cliente. Note que ambos os componentes possuem uma seção contendo mais detalhes.
-  
-- ***Dispositivo -> Broker:*** A comunicação entre os dispositivos e o broker para o envio de dados foi feita através de sockets, via protocolo TCP/IP. Neste caso, utilizamos o protocolo UDP, pois ao enviarmos dados, a velocidade de envio foi uma prioridade.
+### Sistema de Bancos Centralizado
 
-     `Observação:` Note que a conexão TCP é inicializada pelo dispositivo, permitindo que o broker envie requisições para os dispositivos conectados sem a necessidade de abrir múltiplas conexões pelo broker, o que demandaria a busca por diversos endereços físicos. No entanto, ele não envia dados utilizando TCP.
+<p align="justify">
+Um sistema bancário centralizado envolve o banco central desempenhando um papel crucial na intermediação e controle das transações entre instituições financeiras. Nesse modelo, todas as transações, como transferências de fundos entre bancos e liquidação de pagamentos, são processadas e monitoradas pelo banco central. Isso implica que todas as partes envolvidas dependem diretamente das operações e diretrizes estabelecidas pelo banco central para as suas atividades financeiras. Esse sistema centralizado proporciona um controle rigoroso e uma supervisão eficiente das operações financeiras, mas também pode apresentar desafios como possíveis gargalos de comunicação e vulnerabilidades à falhas sistêmicas.
+</p>
   
-- ***Broker -> Dispositivo:*** A comunicação entre o broker e os dispositivos para o envio de comandos/requisições foi feita, assim como a comunicação do dispositivo com o broker, usando sockets, via protocolo TCP/IP. Porém, ao contrário da comunicação de dados, utilizamos o TCP, a fim de priorizar a segurança do envio de requisições.
+- ***Banco -> Banco e Banco -> Banco Central:*** A comunicação entre bancos para o envio de diversas transações pode ser realizada utilizando API REST, semelhante a qualquer outro tipo de API. As regras e protocolos de comunicação são determinados pelo banco intermediador da transação, que, neste caso, é o banco central.
+
+  `Observação:` Qualquer falha no Banco Central afeta todos os bancos envolvidos, o que também se aplica a falhas de segurança.
    
-- ***Broker <-> Cliente:*** A comunicação entre o broker e o cliente foi realizada por meio de rotas de uma API REST, utilizando verbos como: GET, POST, PUT E DELETE.
-
   `Definição:` Uma API REST (Representational State Transfer) é uma arquitetura de comunicação que utiliza os princípios do protocolo HTTP para permitir a comunicação entre sistemas distribuídos.
 
-Ademais, ainda precisamos falar sobre a ordem que essas comunicações acontecem, para isso observe a <br/> <em>Figura 1.</em> <br/>
+Abaixo você pode ver como se da a interação entre os bancos e o banco cantral, para isso observe a <em>Figura 1.</em> 
 
  <div align="center">
    
@@ -170,14 +174,35 @@ Ademais, ainda precisamos falar sobre a ordem que essas comunicações acontecem
    
    </div>
 
-Analisando a imagem, mais especificamente na parte "Envio de comandos", fica evidente que todas as informações passam pelo broker, independentemente de serem dados ou comandos. Por exemplo, se desejo enviar uma mensagem remotamente do cliente para um dispositivo, devo adicionar o comando à minha API através de uma rota. Em seguida, o broker utilizará o protocolo TCP/IP para enviar o comando ao dispositivo via TCP. Já na parte "Conexão Dispositivo -> Broker", é nos mostrado que o dispositivo inicia a comunicação TCP, a fim de que o broker identifique e armazene as conexões.
+<p align="justify">
+Analisando a imagem, observa-se que toda a comunicação depende do agente central. Em outras palavras, qualquer interação entre os bancos necessariamente envolve o banco central. No entanto, um ponto relevante ao utilizar um sistema bancário centralizado é que ele tende a apresentar menos problemas relacionados à concorrência, e quando surgem problemas, as soluções são geralmente mais simples do que em sistemas distribuídos.
+</p>
+
+### Sistema de Bancos Descentralizados (Utilizado nesta Aplicação)
+
+<p align="justify">
+ Em um sistema de bancos distribuídos, a arquitetura permite que múltiplos bancos operem de forma interligada e colaborativa, sem depender exclusivamente de um ponto central de controle. Cada banco possui autonomia para processar transações localmente e se comunicar diretamente com outros bancos dentro do consórcio. Essa abordagem promove maior resiliência e escalabilidade ao sistema, uma vez que falhas em um banco não comprometem necessariamente todo o sistema. Além disso, a distribuição de recursos e responsabilidades entre os bancos pode otimizar a eficiência operacional e aumentar a segurança, permitindo o processamento paralelo e redundante das transações, reduzindo a vulnerabilidade a falhas em pontos únicos. 
+</p>
+
+`Observação:` Ademais, note que sistemas distribuídos possuem vários desafios na sua implementação. Gerenciar a consistência dos dados entre diferentes bancos, garantir a sincronização adequada das transações, lidar com a latência das comunicações entre os bancos e garantir a segurança de ponta a ponta são alguns dos desafios críticos enfrentados. Além disso, a complexidade aumenta com a necessidade de implementar algoritmos distribuídos para coordenação e consenso entre os sistemas, visando evitar problemas como inconsistências de dados e conflitos de transações. Tais problemáticas sobre a implementação desse sistema serão abordadas na seção "Problemáticas e Soluções".
+
+ <div align="center">
+   
+   ![Figura 1](Images/Diagrama2.png)
+   <br/> <em>Figura 1. Sistema de Bancos Descentralizados.</em> <br/>
+   
+   </div>
+
+<p align="justify">
+Observe que a imagem ilustra que um banco pode se conectar com todos os outros bancos presentes no consórcio. Isso ocorre porque, em caso de falha no sistema de um desses bancos, ele pode tentar se comunicar com outro banco disponível. Dessa forma, ao contrário dos sistemas centralizados, a dependência é reduzida, pois para que todo o sistema pare, todos os bancos teriam que estar fora do ar simultaneamente.
+</p>
 
 <A name="Rest"></A>
 # Interface da Aplicação (REST)
 
-Em relação a API foram criadas 8 rotas, as quais utilizaram verbos/métodos como POST, PUT, GET e DELETE.
+Em relação a API foram criadas diversas rotas, as quais utilizaram verbos/métodos como POST, PUT, GET e DELETE.
 
-- ***POST:*** Em relação aos métodos POST, temos duas rotas que à utilizam, sendo que um posta dispositivos em minha aplicação e a outra posta requisições, a rota da primeira do dispositivo é "http://{id do broker}//dispositivos" e a rota da requisição é "http://{id do broker}//requisicoes". Podemos ver a estrutura para construção dessas rotas na Figura 2.
+- ***POST:*** Em relação aos métodos POST, temos dez rotas que à utilizam, sendo que um posta dispositivos em minha aplicação e a outra posta requisições, a rota da primeira do dispositivo é "http://{id do broker}//dispositivos" e a rota da requisição é "http://{id do broker}//requisicoes". Podemos ver a estrutura para construção dessas rotas na Figura 2.
   
   <div align="center">
    
@@ -186,7 +211,7 @@ Em relação a API foram criadas 8 rotas, as quais utilizaram verbos/métodos co
    
    </div>
 
-- ***PUT:*** Só há uma rota que utiliza o este método, tal rota se chama "http://{id do broker}//dispositivo/{id do dispositivo}". Vale lembrar que essa método realiza atualizações na minha API. Mais detalhes na Figura 3.
+- ***PUT:*** Só há uma rota que utiliza este método, tal rota se chama "http://{id do broker}//dispositivo/{id do dispositivo}". Vale lembrar que essa método realiza atualizações na minha API. Mais detalhes na Figura 3.
 
 <div align="center">
    
@@ -195,7 +220,7 @@ Em relação a API foram criadas 8 rotas, as quais utilizaram verbos/métodos co
    
    </div>
 
-- ***GET:*** Já em relação aos métodos GET utilizados, temos 3, os quais são dois para dispositivos e um para requisições. As do dispositivo são as rotas "http://{id do broker}//dispositivos/{id do dispositivo}" para acessar os dados de um único dispositivo e "http://{id do broker}//dispositivos" para acessar os dados de todos os dispositivos. A rota de requisições é "http://{id do broker}//requisicoes". Podemos ver mais detalhes na Figura 4.
+- ***GET:*** Já em relação aos métodos GET utilizados, temos 6, os quais são dois para dispositivos e um para requisições. As do dispositivo são as rotas "http://{id do broker}//dispositivos/{id do dispositivo}" para acessar os dados de um único dispositivo e "http://{id do broker}//dispositivos" para acessar os dados de todos os dispositivos. A rota de requisições é "http://{id do broker}//requisicoes". Podemos ver mais detalhes na Figura 4.
 
 <div align="center">
    
@@ -204,7 +229,7 @@ Em relação a API foram criadas 8 rotas, as quais utilizaram verbos/métodos co
    
    </div>
 
-- ***DELETE:*** Por fim os métodos DELETE, temos 2, assim como os métodos POST, sendo um para dispositivos e outro para requisições, cujas rotas são "http://{id do broker}//dispositivo/{id do dispositivo}" e "http://{id do broker}//requisicoes/{id da requisição}". Para mais detalhes observe a Figura 5.
+- ***DELETE:*** Por fim os métodos DELETE, temos somente 1, assim como os métodos POST, sendo um para dispositivos e outro para requisições, cujas rotas são "http://{id do broker}//dispositivo/{id do dispositivo}" e "http://{id do broker}//requisicoes/{id da requisição}". Para mais detalhes observe a Figura 5.
 
 <div align="center">
    
@@ -212,25 +237,10 @@ Em relação a API foram criadas 8 rotas, as quais utilizaram verbos/métodos co
    <br/> <em>Figura 5. Métodos DELETE.</em> <br/>
    
    </div>
-<A name="Form"></A>
-# Formatação, Envio e Tratamento de Dados
 
-A formatação dos dados já foi mencionada anteriormente, reforçando elas são enviadas como strings específicas enviadas em bytes por partes do dispositivo para o broker e vice-versa. Já o broker envia para o cliente através da API que entende o formato JSON. Em relação ao envio para a API, ele utiliza rotas para fazer POST, DELETE, PUT e GET, e na parte dos sockets, ele usa a função sendto. Vale lembrar que, se não enviarmos no formato correto, haverá erros. Para evitar isso, sempre convertemos em bytes para enviar usando sockets e em JSON para enviar para a API. Na Figura 6, podemos ver sobre o formato do JSON dos dispositivos e na Figura 7, podemos ver o formato do JSON das requisições.
+<A name= "Pro"></A>
+# Problemáticas e Soluções 
 
-<div align="center">
-   
-   ![Figura 6](Imagens/Dispositivo.png)
-   <br/> <em>Figura 6. Formato json dos Dispositivos.</em> <br/>
-   
-   </div>
-
-<div align="center">
-   
-   ![Figura 7](Imagens/Requisicao.png)
-   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
-   
-   </div>
-   
 <A name="Trat"></A>
 # Tratamento de Conexões Simultâneas
 
@@ -250,15 +260,34 @@ Sobre o tratamento de múltiplas conexões, utilizamos threads tanto para recebe
 
 `Observação:` Pelo uso que foi feito dessa aplicação não foi preciso se preocupar com essas questões, contudo para a ampliação de dispositivos e clientes seria de suma importância relevarmos todos os possivéis problemas.  
 
-<A name="Desem"></A>
-# Desempenho
 
-Sobre o desempenho, exploramos algumas estratégias, como usar threads para receber e enviar dados UDP e TCP. Também usamos threads para lidar com as solicitações HTTP dos clientes. Além disso, na parte das solicitações, destacamos o uso de filas para priorizar aquelas que chegaram primeiro. Essas estratégias ajudam a garantir eficiência e bom desempenho. Essa fila pode ser identificada na função "requisicao()" do arquivo broker.py, já as threads se encontram tanto no arquivo broker.py como no dispositivo.py.
+<A name= "Rede"></A>
+# Rede em Anel (Token Ring)
 
-<A name="Conf"></A>
-# Confiabilidade da Solução
+<A name= "Lock"></A>
+# Lock
 
-Quanto à confiabilidade da solução, ou seja, à segurança das conexões quando o acesso à Internet de um dos componentes é excluído, observa-se que o sistema continua funcionando. Isso ocorre porque há tratamento para exceções geradas ao tentar enviar dados para a API ou ao consumir, por meio do cliente, assim como ao tentar enviar dados via TCP/IP pelo dispositivo. Além disso, o broker não enfrenta esse tipo de problema, pois pode receber conexões de múltiplos dispositivos e clientes, além de substituir as conexões realizadas pela mesma maquina.
+<A name= "2pc"></A>
+# 2PC E 2PL
+   
+<A name="clie"></A>
+# Utilizando a Interface
+
+Observe que abaixo seguem algumas Figuras que mostram como a interface CLI se comporta. Vale informar que a entrada está devidamente validada.
+
+<div align="center">
+   
+   ![Figura 8](Imagens/menucliente.png)
+   <br/> <em>Figura 8. Menu Cliente.</em> <br/>
+   
+   </div>
+
+<A name="Teste"></A>
+# Testes
+
+<p align="justify">
+A seguir, serão apresentados uma série de testes realizados utilizando a interface CLI e diretamente através das rotas, utilizando ferramentas como Postman e Thunder Client.
+</p>
 
 <A name="Exec"></A>
 # Como Executar
@@ -268,38 +297,32 @@ Quanto à confiabilidade da solução, ou seja, à segurança das conexões quan
 ### 1. Configuração do Ambiente:
 
    - **Requisitos do Sistema:** Será preciso ter ao menos o Docker instalado na máquina para que seja possível criar a imagem e executá-la.
+
+`Observação:` Caso não possua o Docker instalado você poderá executar os arquivos new_api.py e new_user.py via terminal. 
      
 ### 2. Obtenção do Código Fonte:
 
    - **Clonagem do Repositório:** Você pode utilizar o seguinte comando no terminal para adquirir a aplicação:                                          
 
-           git clone https://github.com/Emanuel-Antonio/PBL-Redes.git.
+           git clone https://github.com/Emanuel-Antonio/PBL2-Redes.git.
      
    - **Download do Código Fonte:** Caso não tenha o Git na máquina, você pode fazer o download desse repositório manualmente. Vá até o canto superior, selecione "Code" e depois "Download ZIP", e então extraia o arquivo ZIP na sua máquina.
 
 ### 3. Configuração da Aplicação:
 
-   - **Arquivos de Configuração:** Abra as pastas "Cliente" e "Dispositivo" e altere nos arquivos "cliente.py" e "dispositivo.py" o endereço IP para o endereço da máquina onde o broker esteja rodando.
+   - **Arquivos de Configuração:** Abra as pastas "Bank" e "Client" e altere nos arquivos "new_api.py" e "new_user.py" o endereço IP para o endereço da máquina onde o banco está rodando, banco é representado pelo arquivo new_api.py.
+     
+`Observação:` Execute essa etapa somente se não informar o IP ao rodar a imagem do docker.  
 
 ### 4. Execução da Aplicação:
 
    - **Com Docker:**
      
-     1. Execute o seguinte comando no terminal dentro das pastas Cliente, Dispositivo e Broker: "docker build -t nome_do_arquivo .", para gerar as imagens, repita três vezes.
+     1. Execute o seguinte comando no terminal dentro das pastas Bank e Client: "docker build -t nome_do_arquivo .", para gerar as imagens, repita duas vezes.
         
-     2. Agora execute as imagens usando o comando "docker run --network='host' -it -e IP=ipBroker nome_da_imagem" para executar as imagens do dispositivo e do cliente, já para executar a imagem do broker use "docker run --network='host' -it nome_da_imagem".
+     2. Agora execute as imagens usando o comando "docker run --network='host' -it -e IP=ipBank nome_da_imagem" para executar as imagens do new_api.py e new_user.py.
 
-<A name="clie"></A>
-# Utilizando a Interface
-
-Observe que abaixo seguem algumas Figuras que mostram como a interface CLI se comporta. Vale informar que a entrada está devidamente validada. Observe que a interface do Cliente é o atuador remoto dos Dispositivos e, assim como já mencionado, trabalha em conjunto com o Broker.
-
-<div align="center">
-   
-   ![Figura 8](Imagens/menucliente.png)
-   <br/> <em>Figura 8. Menu Cliente.</em> <br/>
-   
-   </div>
+`Observação:` Se não quiser rodar através do docker execute pelo terminal usando o comando "python arquivo.py", para os dois arquivos antes mencionados.
 
 <A name="Conc"></A>
 # Conclusão
