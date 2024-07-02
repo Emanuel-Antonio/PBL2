@@ -19,10 +19,10 @@ Nos últimos anos, a adoção de movimentações financeiras exclusivamente por 
 - <A href = "#Arq">Arquitetura da solução</A><br>
 - <A href = "#Rest">Interface da Aplicação (REST)</A><br>
 - <A href = "#Pro">Problemáticas e Soluções</A><br>
-  - <A href = "#Trat">Tratamento de Conexões Simultâneas</A><br>
+  - <A href = "#Trat">Problemáticas</A><br>
     - <A href = "#Rede">Rede em Anel (Token Ring)</A><br>
     - <A href = "#Lock">Lock </A><br>
-    - <A href = "#2pc">2PC e 2PL</A><br>
+    - <A href = "#2pc">2PC</A><br>
 - <A href = "#clie">Utilizando a Interface</A><br>
 - <A href = "#Teste">Testes</A><br>
 - <A href = "#Exec">Como Executar</A><br>
@@ -291,24 +291,29 @@ Em relação a API foram criadas diversas rotas, as quais utilizaram verbos/mét
 # Problemáticas e Soluções 
 
 <A name="Trat"></A>
-# Tratamento de Conexões Simultâneas
+# Problemáticas
 
-Sobre o tratamento de múltiplas conexões, utilizamos threads tanto para receber dados, enviar dados e aceitar entrada de dados do terminal, tudo de maneira paralela. Em relação aos problemas de conectividade, não foram identificados, já que esses problemas ocorrem quando há uma extrema quantidade de dispositivos e clientes, e pela quantidade de aparelhos conectados na aplicação não houve esse tipo de problema. Contudo, vale falar sobre os possíveis problemas ao utilizarmos threads, sendo eles: Condições de corrida, Deadlocks, Starvation, Overhead e Dificuldade de depuração.
+Desenvolver uma aplicação de bancos distribuídos apresenta uma série de desafios e problemáticas que precisam ser cuidadosamente considerados:
 
-`Definições:` 
+- **Consistência dos Dados:** Garantir que todos os nós do sistema tenham uma visão consistente dos dados em um ambiente distribuído pode ser complexo. Decidir entre consistência forte e eventual pode afetar diretamente o desempenho e a integridade dos dados.
 
-- **Condições de corrida:** Quando várias threads tentam acessar e modificar os mesmos dados ao mesmo tempo, podem ocorrer resultados inconsistentes.
+- **Concorrência e Conflitos:** Conflitos de escrita podem ocorrer quando múltiplos nós tentam atualizar os mesmos dados simultaneamente. Implementar estratégias de controle de concorrência, como locking ou versões de dados, é essencial para mitigar esse problema.
+
+- **Tolerância a Falhas:** Em um ambiente distribuído, falhas de rede, falhas de nó e falhas de comunicação são mais comuns. Implementar mecanismos robustos de detecção de falhas e recuperação é crucial para manter a disponibilidade do sistema.
+
+- **Coordenação de Transações:** Coordenar transações distribuídas entre múltiplos nós sem comprometer a consistência ou a disponibilidade dos dados é um desafio significativo. Protocolos de transação como o Two-Phase Commit (2PC) ou mecanismos alternativos como transações compensatórias são frequentemente usados para resolver esse problema.
 
 - **Deadlocks:** Ocorre quando duas ou mais threads ficam aguardando indefinidamente por recursos que a outra possui. Isso pode paralisar o sistema.
 
-- **Starvation:** Algumas threads podem ficar impedidas de fazer progresso devido a outras threads monopolizarem recursos necessários.
+- **Livelocks:** É uma situação em sistemas distribuídos ou concorrentes onde dois ou mais processos ou threads ficam presos em um ciclo de interação contínua, sem conseguir progredir. Ao contrário de um deadlock, onde os processos estão esperando recursos que estão sendo mantidos por outros processos, no livelock os processos estão ativos e tentando resolver uma condição de corrida ou de concorrência de forma ineficaz.
 
-- **Overhead:** O uso excessivo de threads pode levar a um alto consumo de recursos do sistema, como memória e CPU, devido ao contexto de comutação e à sincronização necessária entre as threads.
+# Soluções
 
-- **Dificuldades de depuração:** Problemas de concorrência podem ser difíceis de reproduzir e depurar, especialmente em sistemas complexos com muitas threads em execução simultânea.
+<p align="Justify">
+Este projeto aplicou diferentes soluções para enfrentar os desafios mencionados anteriormente. Foram utilizados locks para lidar com a concorrência entre contas dentro do mesmo banco. Além disso, foi implementada uma estrutura de rede em anel para o consórcio, o que permitiu atribuir uma coordenação e ordem às transações entre diferentes bancos, evitando conflitos de operações externas que poderiam interferir nas operações de outros bancos.
 
-`Observação:` Pelo uso que foi feito dessa aplicação não foi preciso se preocupar com essas questões, contudo para a ampliação de dispositivos e clientes seria de suma importância relevarmos todos os possivéis problemas.  
-
+Para garantir a atomicidade das transações no pacote de transações, foram empregados os protocolos Two-Phase Commit (2PC) e Two-Phase Locking (2PL). Para mais detalhes sobre a implementação dessas soluções, é possível analisar o código-fonte do projeto. Abaixo, vou discorrer um pouco mais sobre cada uma dessas abordagens.
+</p>
 
 <A name= "Rede"></A>
 # Rede em Anel (Token Ring)
@@ -316,9 +321,30 @@ Sobre o tratamento de múltiplas conexões, utilizamos threads tanto para recebe
 <A name= "Lock"></A>
 # Lock
 
+
+O uso de locks (ou travas) é fundamental em programação concorrente para garantir a consistência e a integridade dos dados compartilhados entre threads ou processos.
+
+### Propósito e Funcionamento:
+
+  - Garantia de Exclusão Mútua: O principal objetivo de um lock é garantir que apenas uma thread por vez tenha acesso a um recurso compartilhado (como uma variável, uma seção crítica do código ou um banco de dados), evitando assim condições de corrida.
+
+  - Operação Atômica: Quando uma thread adquire um lock, ela ganha o direito exclusivo de acessar o recurso protegido. Isso garante que nenhuma outra thread possa acessar ou modificar o recurso até que o lock seja liberado.
+
+`Observação:` É importante mencionar que o uso de locks nesta aplicação poderia potencialmente causar deadlocks. No entanto, devido à utilização da rede em anel, esse problema é mitigado.
+
 <A name= "2pc"></A>
-# 2PC E 2PL
-   
+# 2PC
+
+### Two-Phase Commit (2PC):
+
+Objetivo: Garantir a atomicidade das transações em sistemas distribuídos.
+
+  - Fase 1 (Preparação): O coordenador envia uma solicitação de preparação para todos os participantes. Cada participante responde com um voto de "preparado" ou "aborto" com base na sua capacidade de executar a transação com segurança.
+
+  - Fase 2 (Confirmação): Se todos os participantes estiverem preparados, o coordenador envia uma mensagem de commit. Todos os participantes então executam a transação de forma definitiva (commit). Se algum participante não puder prosseguir, o coordenador envia uma mensagem de rollback para abortar a transação.
+
+`Observação:` Sobre o 2PC, vale informar que caso a confirmação demonstre falha, a preparação será desfeita.
+
 <A name="clie"></A>
 # Utilizando a Interface
 
