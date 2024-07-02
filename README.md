@@ -20,6 +20,7 @@ Nos últimos anos, a adoção de movimentações financeiras exclusivamente por 
 - <A href = "#Rest">Interface da Aplicação (REST)</A><br>
 - <A href = "#Pro">Problemáticas e Soluções</A><br>
   - <A href = "#Trat">Problemáticas</A><br>
+  - <A href = "#Sol">Soluções</A><br>
     - <A href = "#Rede">Rede em Anel (Token Ring)</A><br>
     - <A href = "#Lock">Lock </A><br>
     - <A href = "#2pc">2PC</A><br>
@@ -307,6 +308,7 @@ Desenvolver uma aplicação de bancos distribuídos apresenta uma série de desa
 
 - **Livelocks:** É uma situação em sistemas distribuídos ou concorrentes onde dois ou mais processos ou threads ficam presos em um ciclo de interação contínua, sem conseguir progredir. Ao contrário de um deadlock, onde os processos estão esperando recursos que estão sendo mantidos por outros processos, no livelock os processos estão ativos e tentando resolver uma condição de corrida ou de concorrência de forma ineficaz.
 
+<A name="Sol"></A>
 # Soluções
 
 <p align="Justify">
