@@ -31,7 +31,7 @@ def login(users):
         name = input("Seu nome: ")
         age = int(input("Sua Idade: "))
         password = input("Sua senha: ")
-        id = input("Digite seu Id")
+        id = input("Digite seu Id: ")
         tipo = input('Digite o tipo de conta')
         
         #if len(bank) == 12:
@@ -89,7 +89,7 @@ def verificarLogin(id, password):
 
         # Verificar se a publicação foi bem-sucedida
         if response_publish.status_code != 201:
-            print("Erro ao enviar os dados UDP para a API:", response_publish.status_code)
+            print("Falha no login:", response_publish.status_code)
             print("Resposta da API:", response_publish.text)
         else:
             print("Login efetuado com sucesso!")
@@ -137,10 +137,10 @@ def getUser(id):
     consumed_messsage = {}
     try:
         response_consume = requests.get(url_consume, timeout=2)
-        if response_consume.status_code == 200:
+        if response_consume.status_code == 201:
             consumed_messsage = response_consume.json()
         else:
-            print("Erro ao consumir a API:", response_consume.status_code)
+            print("Usuário inexistente!:", response_consume.status_code)
     except Exception as e:
         print("Não foi possível estabelescer uma conexão com o bank ...")
     return consumed_messsage        
