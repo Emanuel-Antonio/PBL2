@@ -392,7 +392,7 @@ A seguir, serão apresentados uma série de testes realizados utilizando as rota
 <div align="center">
 
 <p align="justify">
-As Figuras 22 e 23 ilustram a correta passagem do token. Note que a sequência que chega a um servidor é sempre diferente daquela que chega a outro servidor. Esse teste foi realizado para evitar a duplicação do token na rede.
+  Teste nº 1 - As Figuras 22 e 23 ilustram a correta passagem do token. Note que a sequência que chega a um servidor é sempre diferente daquela que chega a outro servidor. Esse teste foi realizado para evitar a duplicação do token na rede.
   </p>
    
    ![Figura 22](Images/Token1.png)
@@ -408,7 +408,7 @@ As Figuras 22 e 23 ilustram a correta passagem do token. Note que a sequência q
    </div>
 
 <p align="justify">
-A Figura 24 ilustra a reeleição do token na rede quando ele se perde. Considera-se o token perdido quando um servidor fica sem recebê-lo por um determinado período de tempo.
+  Teste nº 2 - A Figura 24 ilustra a reeleição do token na rede quando ele se perde. Considera-se o token perdido quando um servidor fica sem recebê-lo por um determinado período de tempo.
 </p>
 
 <div align="center">
@@ -419,7 +419,7 @@ A Figura 24 ilustra a reeleição do token na rede quando ele se perde. Consider
    </div>
 
 <p align="justify">
-As Figuras 25 e 26 ilustram os dados das contas antes da execução dos testes mostrados nas Figuras 27 e 28, que foram realizados simultaneamente utilizando o Flows do Postman, conforme exibido na Figura 29. Esse teste foi realizado para observar se um dado está sendo sobreposto pelo outro. Os resultados podem ser vistos nas Figuras 30 e 31. Ao analisar sa gravuras irá perceber que isso não ocorre.
+  Teste nº 3 - As Figuras 25 e 26 ilustram os dados das contas antes da execução dos testes mostrados nas Figuras 27 e 28, que foram realizados simultaneamente utilizando o Flows do Postman, conforme exibido na Figura 29. Esse teste foi realizado para observar se um dado está sendo sobreposto pelo outro. Os resultados podem ser vistos nas Figuras 30 e 31. Ao analisar sa gravuras irá perceber que isso não ocorre.
 </p>
 
   <div align="center">
@@ -472,7 +472,7 @@ As Figuras 25 e 26 ilustram os dados das contas antes da execução dos testes m
    </div>
 
 <p align="justify">
-Foi realizado outro teste utilizando os dados iniciais ilustrados nas Figuras 30 e 31. Desta vez, os dados mostrados na Figura 27 foram enviados duas vezes para verificar se a operação seria realizada mesmo sem saldo. Os resultados podem ser vistos nas Figuras 32 e 33. Ao observar o resultado perceberá que não houve duplo abate, já que isso iria deixar a conta com saldo negativo.
+  Teste nº 4 - Foi realizado outro teste utilizando os dados iniciais ilustrados nas Figuras 30 e 31. Desta vez, os dados mostrados na Figura 27 foram enviados duas vezes para verificar se a operação seria realizada mesmo sem saldo. Os resultados podem ser vistos nas Figuras 32 e 33. Ao observar o resultado perceberá que não houve duplo abate, já que isso iria deixar a conta com saldo negativo.
 </p>
 
    <div align="center">
@@ -490,7 +490,7 @@ Foi realizado outro teste utilizando os dados iniciais ilustrados nas Figuras 30
    </div>
 
 <p align="justify">
-As Figuras 32 e 33 representam os dados iniciais para o teste de um pacote de transferências que será executado pelo servidor. O pacote pode ser visualizado na Figura 34. Neste caso, a primeira transação será bem-sucedida; no entanto, devido à impossibilidade de execução da segunda transação do pacote, o pacote inteiro será abortado, resultando na reversão da primeira transação. Os resultados podem ser vistos novamente nas Figuras 32 e 33.
+  Teste nº 5 - As Figuras 32 e 33 representam os dados iniciais para o teste de um pacote de transferências que será executado pelo servidor. O pacote pode ser visualizado na Figura 34. Neste caso, a primeira transação será bem-sucedida; no entanto, devido à impossibilidade de execução da segunda transação do pacote, o pacote inteiro será abortado, resultando na reversão da primeira transação. Este teste serviu para ver se a reversão do pacote está funcionando adequadamente. Os resultados podem ser vistos novamente nas Figuras 32 e 33.
 </p>
 
    <div align="center">
@@ -501,7 +501,7 @@ As Figuras 32 e 33 representam os dados iniciais para o teste de um pacote de tr
    </div>
 
 <p align="justify">
-Por último, foi realizado um teste utilizando novamente os dados ilustrados nas Figuras 32 e 33. O pacote a ser enviado está ilustrado na Figura 35. O objetivo deste teste é verificar se o pacote será executado corretamente, uma vez que todas as contas possuem fundos para realizar as operações. Os resultados desse teste podem ser visualizados na Figura 36 e 33.
+  Teste nº 6 - Por último, foi realizado um teste utilizando novamente os dados ilustrados nas Figuras 32 e 33. O pacote a ser enviado está ilustrado na Figura 35. O objetivo deste teste é verificar se o pacote será executado corretamente, uma vez que todas as contas possuem fundos para realizar as operações. Os resultados desse teste podem ser visualizados na Figura 36 e 33.
 </p>
 
    <div align="center">
@@ -517,6 +517,8 @@ Por último, foi realizado um teste utilizando novamente os dados ilustrados nas
    <br/> <em>Figura 36.</em> <br/>
    
    </div>
+
+`Observação:` Há uma variedade de outros testes que poderiam ser demonstrados nesta seção. No entanto, para não se estender muito, ela focou em mostrar os testes mais relevantes. Para mais testes, você pode verificar ao executar esta aplicação.
 
 <A name="Exec"></A>
 # Como Executar
