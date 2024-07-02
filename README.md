@@ -386,7 +386,7 @@ Observe que abaixo seguem algumas Figuras que mostram como a interface CLI se co
 # Testes
 
 <p align="justify">
-A seguir, serão apresentados uma série de testes realizados utilizando a interface CLI e diretamente através das rotas, utilizando ferramentas como Postman e Thunder Client.
+A seguir, serão apresentados uma série de testes realizados utilizando as rotas, utilizando ferramentas como Postman e Thunder Client. Além de visualizar o terminal do servidor.
 </p>
 
 <div align="center">
@@ -419,90 +419,102 @@ A Figura 24 ilustra a reeleição do token na rede quando ele se perde. Consider
    </div>
 
 <p align="justify">
-As Figuras 25 e 26, servem para ilustrar os dados das contas antes da execução dos testes ilustrados pela Figura 27 e 28, que rodaram no mesmo momento atrves do uso do Flows do Postman que pode ser visto na Figura 29. O resultado desse Teste pode ser visto nas Figuras 30 e 31
+As Figuras 25 e 26 ilustram os dados das contas antes da execução dos testes mostrados nas Figuras 27 e 28, que foram realizados simultaneamente utilizando o Flows do Postman, conforme exibido na Figura 29. Esse teste foi realizado para observar se um dado está sendo sobreposto pelo outro. Os resultados podem ser vistos nas Figuras 30 e 31. Ao analisar sa gravuras irá perceber que isso não ocorre.
 </p>
 
   <div align="center">
    
    ![Figura 25](Images/Status0.png)
-   <br/> <em>Figura 25. Visualização da Regeneração do Token na rede quando ele se perde.</em> <br/>
+   <br/> <em>Figura 25.</em> <br/>
    
    </div>
 
    <div align="center">
    
    ![Figura 26](Images/Status1.png)
-   <br/> <em>Figura 26. Visualização da Regeneração do Token na rede quando ele se perde.</em> <br/>
+   <br/> <em>Figura 26.</em> <br/>
    
    </div>
 
 <div align="center">
    
    ![Figura 27](Images/req1.png)
-   <br/> <em>Figura 27. Visualização da Regeneração do Token na rede quando ele se perde.</em> <br/>
+   <br/> <em>Figura 27.</em> <br/>
    
    </div>
 
 <div align="center">
    
    ![Figura 28](Images/req2.png)
-   <br/> <em>Figura 28. Visualização da Regeneração do Token na rede quando ele se perde.</em> <br/>
+   <br/> <em>Figura 28.</em> <br/>
    
    </div>
 
    <div align="center">
    
    ![Figura 29](Images/Flows.png)
-   <br/> <em>Figura 29. Visualização da Regeneração do Token na rede quando ele se perde.</em> <br/>
+   <br/> <em>Figura 29.</em> <br/>
    
    </div>
 
    <div align="center">
    
    ![Figura 30](Images/Status2.png)
-   <br/> <em>Figura 30. Visualização da Regeneração do Token na rede quando ele se perde.</em> <br/>
+   <br/> <em>Figura 30.</em> <br/>
    
    </div>
 
    <div align="center">
    
    ![Figura 31](Images/Status3.png)
-   <br/> <em>Figura 31. Visualização da Regeneração do Token na rede quando ele se perde.</em> <br/>
+   <br/> <em>Figura 31.</em> <br/>
    
    </div>
+
+<p align="justify">
+Foi realizado outro teste utilizando os dados iniciais ilustrados nas Figuras 30 e 31. Desta vez, os dados mostrados na Figura 27 foram enviados duas vezes para verificar se a operação seria realizada mesmo sem saldo. Os resultados podem ser vistos nas Figuras 32 e 33. Ao observar o resultado perceberá que não houve duplo abate, já que isso iria deixar a conta com saldo negativo.
+</p>
 
    <div align="center">
    
    ![Figura 32](Images/Status4.png)
-   <br/> <em>Figura 32. Visualização da Regeneração do Token na rede quando ele se perde.</em> <br/>
+   <br/> <em>Figura 32.</em> <br/>
    
    </div>
 
    <div align="center">
    
    ![Figura 33](Images/Status5.png)
-   <br/> <em>Figura 33. Visualização da Regeneração do Token na rede quando ele se perde.</em> <br/>
+   <br/> <em>Figura 33.</em> <br/>
    
    </div>
 
+<p align="justify">
+As Figuras 32 e 33 representam os dados iniciais para o teste de um pacote de transferências que será executado pelo servidor. O pacote pode ser visualizado na Figura 34. Neste caso, a primeira transação será bem-sucedida; no entanto, devido à impossibilidade de execução da segunda transação do pacote, o pacote inteiro será abortado, resultando na reversão da primeira transação. Os resultados podem ser vistos novamente nas Figuras 32 e 33.
+</p>
+
    <div align="center">
    
-   ![Figura 34](Images/Status6.png)
-   <br/> <em>Figura 34. Visualização da Regeneração do Token na rede quando ele se perde.</em> <br/>
+   ![Figura 34](Images/FalhaPacote.png)
+   <br/> <em>Figura 34.</em> <br/>
    
    </div>
+
+<p align="justify">
+Por último, foi realizado um teste utilizando novamente os dados ilustrados nas Figuras 32 e 33. O pacote a ser enviado está ilustrado na Figura 35. O objetivo deste teste é verificar se o pacote será executado corretamente, uma vez que todas as contas possuem fundos para realizar as operações. Os resultados desse teste podem ser visualizados na Figura 36 e 33.
+</p>
 
    <div align="center">
    
    ![Figura 35](Images/PacoteValido.png)
-   <br/> <em>Figura 35. Visualização da Regeneração do Token na rede quando ele se perde.</em> <br/>
+   <br/> <em>Figura 35.</em> <br/>
    
    </div>
 
    <div align="center">
    
-   ![Figura 36](Images/FalhaPacote.png)
-   <br/> <em>Figura 36. Visualização da Regeneração do Token na rede quando ele se perde.</em> <br/>
+   ![Figura 36](Images/Status6.png)
+   <br/> <em>Figura 36.</em> <br/>
    
    </div>
 
