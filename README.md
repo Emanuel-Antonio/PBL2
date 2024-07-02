@@ -246,7 +246,7 @@ Em relação a API foram criadas diversas rotas, as quais utilizaram verbos/mét
    
    </div>
 
-- ***PUT:*** Só há uma rota que utiliza este método, tal rota se chama "http://{id do broker}//dispositivo/{id do dispositivo}". Vale lembrar que essa método realiza atualizações na minha API. Mais detalhes na Figura 3.
+- ***PUT:*** Só há uma rota que utiliza este método, tal rota se chama "http://{id do banco junto com a porta}/users/{id do usuário}". Vale lembrar que essa método realiza atualizações na minha API. Mais detalhes na Figura 3.
 
 <div align="center">
    
@@ -278,7 +278,7 @@ Em relação a API foram criadas diversas rotas, as quais utilizaram verbos/mét
    
    </div>
 
-- ***DELETE:*** Por fim os métodos DELETE, temos somente 1, assim como os métodos POST, , cujas rotas são "http://{id do broker}//dispositivo/{id do dispositivo}" e "http://{id do broker}//requisicoes/{id da requisição}". Para mais detalhes observe a Figura 5.
+- ***DELETE:*** Por fim os métodos DELETE, temos somente 1, assim como os método PUT, , cuja rota é "http://{id do banco junto com a porta}/users/{id do usuário}". Para mais detalhes observe a Figura 5.
 
 <div align="center">
    
