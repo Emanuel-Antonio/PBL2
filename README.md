@@ -35,7 +35,7 @@ Nos últimos anos, a adoção de movimentações financeiras exclusivamente por 
 A API atua como servidor para um banco específico, permitindo aos usuários acessar diversas funcionalidades, tais como: criação de contas, realização de transferências, depósitos, saques, entre outras. Toda a comunicação ocorre por meio de uma API REST, implementada com Flask, uma biblioteca versátil da linguagem Python.
 </p>
 
-## Arquivo Principal (new_api.py)
+## Arquivo Principal (api.py)
 
 <p align='justify'>
 Este arquivo contém as rotas responsáveis pela gerenciamento de transações via token e pela realização de transações bancárias. Ele implementa métodos HTTP POST, GET, PUT e DELETE para operações específicas. Abaixo estão detalhadas as funcionalidades de cada rota e função desse arquivo.
@@ -110,10 +110,10 @@ Este arquivo contém as rotas responsáveis pela gerenciamento de transações v
 A interface CLI permite que o usuário acesse as funcionalidades do banco. Para isso, o arquivo da interface utiliza requisições HTTP para interagir com o servidor do banco.
 </p>
 
-## Arquivo Principal (new_user.py)
+## Arquivo Principal (user.py)
 
 <p align='justify'>
-A seguir, uma breve descrição de cada função presente no arquivo 'new_user.py', que representa nossa interface CLI.
+A seguir, uma breve descrição de cada função presente no arquivo 'user.py', que representa nossa interface CLI.
 </p>
 
   - ***login(users):*** Esta função é responsável por realizar o login ou criar uma nova conta. No processo de login, utiliza a lista de usuários fornecida como parâmetro. O retorno são os dados do usuário logado.
@@ -347,7 +347,7 @@ A seguir, serão apresentados uma série de testes realizados utilizando a inter
 
    - **Requisitos do Sistema:** Será preciso ter ao menos o Docker instalado na máquina para que seja possível criar a imagem e executá-la.
 
-`Observação:` Caso não possua o Docker instalado você poderá executar os arquivos new_api.py e new_user.py via terminal. 
+`Observação:` Caso não possua o Docker instalado você poderá executar os arquivos api.py e user.py via terminal. 
      
 ### 2. Obtenção do Código Fonte:
 
@@ -359,7 +359,7 @@ A seguir, serão apresentados uma série de testes realizados utilizando a inter
 
 ### 3. Configuração da Aplicação:
 
-   - **Arquivos de Configuração:** Abra as pastas "Bank" e "Client" e altere nos arquivos "new_api.py" e "new_user.py" o endereço IP para o endereço da máquina onde o banco está rodando, banco é representado pelo arquivo new_api.py.
+   - **Arquivos de Configuração:** Abra as pastas "Bank" e "Client" e altere nos arquivos "api.py" e "user.py" o endereço IP para o endereço da máquina onde o banco está rodando, banco é representado pelo arquivo api.py.
      
 `Observação:` Execute essa etapa somente se não informar o IP ao rodar a imagem do docker.  
 
@@ -369,7 +369,7 @@ A seguir, serão apresentados uma série de testes realizados utilizando a inter
      
      1. Execute o seguinte comando no terminal dentro das pastas Bank e Client: "docker build -t nome_do_arquivo .", para gerar as imagens, repita duas vezes.
         
-     2. Agora execute as imagens usando o comando "docker run --network='host' -it -e IP=ipBank nome_da_imagem" para executar as imagens do new_api.py e new_user.py.
+     2. Agora execute as imagens usando o comando "docker run --network='host' -it -e IP=ipBank nome_da_imagem" para executar as imagens do api.py e user.py.
 
 `Observação:` Se não quiser rodar através do docker execute pelo terminal usando o comando "python arquivo.py", para os dois arquivos antes mencionados.
 
