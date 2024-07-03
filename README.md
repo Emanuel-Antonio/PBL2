@@ -643,7 +643,7 @@ A seguir, serão apresentados uma série de testes realizados utilizando as rota
 
  - Pelo menos uma transação concorrente é realizada ?
 
-    `Resposta:` Sim, isso é garantido pelo uso de locks e fica evidente na seção de Testes, no teste nº 3. Contudo, o funcionamento varia conforme o saldo disponível para realizar a transação. Por exemplo, se a conta tiver saldo suficiente para apenas uma transação, a segunda transação irá falhar. Se houver saldo para ambas as transações, ambas serão concluídas com sucesso, e o saldo final será corretamente atualizado nos dois casos.
+    `Resposta:` Sim, isso é garantido pelo uso da rede em anel. Cada transação ocorre de maneira isolada e sequencial, uma por vez. Portanto, se uma transação requer que dinheiro seja recebido para realizar outra operação, isso dependerá da ordem das operações dentro da lista de pacotes de transações de cada banco. Além disso, através de testes, verificou-se o pleno funcionamento em relação a essa problemática. As contas apresentaram os saldos corretamente de acordo com a ordem das transações, garantindo que os clientes possam realizar suas transações de maneira adequada, e sua conclusão dependerá somente do saldo bancário.
 
  - Uso do docker
 
