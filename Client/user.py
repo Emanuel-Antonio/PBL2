@@ -32,7 +32,7 @@ def login(users):
         age = int(input("Sua Idade: "))
         password = input("Sua senha: ")
         id = input("Digite seu Id: ")
-        tipo = input('Digite o tipo de conta')
+        tipo = input('Digite o tipo de conta: ')
         
         #if len(bank) == 12:
         #    pix = bank[-1:] + str(getTransId())

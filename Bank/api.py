@@ -312,7 +312,7 @@ def abort():
                 return jsonify(transation),201
         return jsonify(transation), 401
         
-# Rota para inicializar 2PC
+# Rota para 2PC
 @app.route('/recipient', methods=['POST'])
 def recipient():
     transation = request.get_json()
