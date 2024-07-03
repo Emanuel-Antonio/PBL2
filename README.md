@@ -613,6 +613,46 @@ A seguir, serão apresentados uma série de testes realizados utilizando as rota
 <A name="Res"></A>
 # Perguntas e Respostas
 
+ - Esta Aplicação Permite gerenciar contas ?
+
+  `Resposta:` Sim, esta aplicação permite realizar a criação, atualização, aquisição e deleção de contas. Isso fica evidente nas seções Interface da Arquitetura (REST), Testes e Utilizando a Interface. Ademais, isto também vale para a criação e realização de transações.
+
+ - Permite selecionar e realizar transferência entre diferentes contas?
+
+  `Resposta:` Sim, você pode ver um teste que aborda essa situação na seção Testes, mais precisamente no teste nº 3.
+
+ - Comunicação entre servidores
+
+  `Resposta:` Ocorre de maneira adequada, utilizando API REST, a verificação pode ser feita na seção Interface da Arquitetura (REST).
+
+ - Sincronização em um único servidor
+
+  `Resposta:` Foi tratado através do uso de locks, e o 2PC auxilia na atomicidade das transações. Você pode ver mais informações sobre essas estratégias na seção Problemáticas e Soluções. Além disso, após uma série de testes, essa solução, em conjunto com uma API REST implementada através da biblioteca Flask, mostrou-se eficiente.
+
+ - Algoritmo da concorrência distribuída está teoricamente bem empregado?
+
+  `Resposta:` A estratégia utilizada para resolver a problemática de concorrência distribuída foi implementar o sistema na estrutura de token ring. Esta é uma das soluções possíveis para problemas de concorrência em sistemas distribuídos, embora não seja a mais eficiente. Há mais informações sobre o Token Ring na seção Problemáticas e Soluções.
+
+ - Algoritmo está tratrando o problema na prática?
+
+  `Resposta:` Sim, pode verificar o pleno funcionamento na seção Testes, caso persista alguma dúvida sobre o funcionamento pode verificar o código fonte.
+
+ - Tratamento da confiabilidade
+
+  `Resposta:` Quanto à confiabilidade do programa, ele é confiável: quando um banco se desconecta, há mecanismos para evitar que todo o sistema seja afetado. Uma das estratégias utilizadas é a regeneração do token. Quando o banco retorna, há uma verificação para garantir que não existam múltiplos tokens na rede. Caso haja, o sistema invalidará os tokens excedentes antes de executar qualquer operação. Tem algumas informações adicionais na seção Problemáticas e Soluções.
+
+ - Pelo menos uma transação concorrente é realizada ?
+
+  `Resposta:` Sim, isso é garantido pelo uso de locks e fica evidente na seção de Testes, no teste nº 3. Contudo, o funcionamento varia conforme o saldo disponível para realizar a transação. Por exemplo, se a conta tiver saldo suficiente para apenas uma transação, a segunda transação irá falhar. Se houver saldo para ambas as transações, ambas serão concluídas com sucesso, e o saldo final será corretamente atualizado nos dois casos.
+
+ - Uso do docker
+
+  `Resposta:` Esta aplicação faz uso do docker. Isto é evidenciado na seção Como Executar.
+
+ - Documentação do código (Github)
+
+  `Resposta:` A aplicação está devidamente comentada no seu código-fonte, assim como os commits do projeto seguem um padrão claro e compreensível.
+
 
 <A name="Conc"></A>
 # Conclusão
