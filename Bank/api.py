@@ -12,7 +12,7 @@ app = Flask(__name__)
 # Configurações
 #bank = os.getenv("bank")
 
-bank = "192.168.1.104"
+bank = "172.16.103.8"
 
 # Lista de usuários
 users = []
@@ -50,9 +50,9 @@ def get_status():
 
 # Estado do nó
 node_state = {
-    "node_id": 1,  # Atualize para o ID do nó específico
-    "node_urls": ["http://192.168.1.104:8088", "http://192.168.1.103:8088"],  # Lista de URLs dos nós --> Mudar no Laboratório
-    "current_index": 0,  # Índice do nó atual na lista
+    "node_id": 2,  # Atualize para o ID do nó específico
+    "node_urls": ["http://172.16.103.9:8088", "http://172.16.103.8:8088", "http://172.16.103.7:8088"],  # Lista de URLs dos nós --> Mudar no Laboratório
+    "current_index": 1,  # Índice do nó atual na lista
     "has_token": False,
     "last_token_time": time.time(),
     "token_timeout": 30,  # Tempo máximo que o nó pode ficar sem token (em segundos)
@@ -70,10 +70,11 @@ def pass_token():
             initial_index +=1
             initial_index = initial_index % len(node_state["node_urls"])
             next_node_url = initial_index
-            print(f"Tentando passar o token para: {node_state["node_urls"][next_node_url]}")
+            var = node_state["node_urls"][next_node_url]
+            print(f"Tentando passar o token para: {var}")
             try:
                 if node_state["node_urls"][next_node_url] != node_state["node_urls"][node_state["current_index"]]:
-                    response = requests.post(f"{node_state["node_urls"][next_node_url]}/receive_token",json={"Token sequence": node_state['token_sequence']+1}, timeout=2)
+                    response = requests.post(f"{var}/receive_token",json={"Token sequence": node_state['token_sequence']+1}, timeout=2)
                     if response.status_code == 200:
                         print(f"Token passado para o próximo nó: {next_node_url}")
                         node_state["last_token_time"] = time.time()
@@ -330,16 +331,17 @@ def recipient():
     return jsonify(transation), 401
         
 def abort_transactions(transactions):
+    global bank
     for trans in transactions:
         if trans['status'] == 'commit':
             
-            #if len(trans["id"]) == 7:
+            #if len(str(trans["id"])) == 7:
             #    url = f'http://{bank[:11] + str(trans["id"])[:1]}:8088/abort'
             #else:
             #    url = f'http://{bank[:11] + str(trans["id"])[:2]}:8088/abort'
             
             #comentar a linha de baixo no laboratorio e descomentar as de cima
-            url = f'http://{bank[:10] + str(trans["id"])[:3]}:8088/abort'
+            url = f'http://{bank[:11] + str(trans["id"])[:1]}:8088/abort'
             response = requests.post(url, json=trans)
             while response.status_code != 201:
                 response = requests.post(url, json=trans)    
@@ -362,27 +364,29 @@ def receiveTransfers():
         return jsonify({"message": "erro"}), 401
 
 def transfer(transations):
+    print("processando transação")
+    global bank
     trans_destiny = []
     trans_origin = []
     print(transations)
     for transation in transations:
         
-        #if len(transation["id_destiny"]) == 7:
+        #if len(transation[str("id_destiny")]) == 7:
         #    url_destiny = f'http://{bank[:11] + str(transation["id_destiny"])[:1]}:8088/sender'
         #else:
         #    url_destiny = f'http://{bank[:11] + str(transation["id_destiny"])[:2]}:8088/sender'
             
         #comentar a linha de baixo no laboratorio e descomentar as de cima
-        url_destiny = f'http://{bank[:10] + str(transation["id_destiny"])[:3]}:8088/sender'
+        url_destiny = f'http://{bank[:11] + str(transation["id_destiny"])[:1]}:8088/sender'
+       
         try: 
             
-            #if len(transation["id_origin"]) == 7:
-            #    url_origin = f'http://{bank[:11] + str(transation["id_origin"])[:1]}:8088/sender'
+            #if len(transation[str("id_origin")]) == 7:
+            #    url_origin = f'http://{bank[:11] + str(transation["id_origin"])[:1]}:8088/recipient'
             #else:
-            #    url_origin = f'http://{bank[:11] + str(transation["id_origin"])[:2]}:8088/sender'
-                
+            #    url_origin = f'http://{bank[:11] + str(transation["id_origin"])[:2]}:8088/recipient' 
             #comentar a linha de baixo no laboratorio e descomentar as de cima
-            url_origin = f'http://{bank[:10] + str(transation["id_origin"])[:3]}:8088/recipient'
+            url_origin = f'http://{bank[:11] + str(transation["id_origin"])[:1]}:8088/recipient'
             response = requests.post(url_origin, json=transation, timeout=1)
             if response.status_code != 201:
                 abort_transactions(trans_destiny)
@@ -409,6 +413,7 @@ def transfer(transations):
                     transation1['status'] = 'commit'
                     trans_destiny.append(transation1)
         except Exception as e:
+            print("exception",e)
             abort_transactions(trans_destiny)
             abort_transactions(trans_origin)
             return False
@@ -425,7 +430,7 @@ def main():
     thread_servidor_flask.start()
     
     # Inicializa o nó com o token (apenas para o primeiro nó na rede)
-    if node_state["node_id"] == 1:
+    if node_state["node_id"] == 0:
         receive_token()
         node_state["pass"] == True
     

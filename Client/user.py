@@ -3,7 +3,7 @@ import requests
 import json
 import random
 import time
-bank = "192.168.1.104"
+bank = "172.16.103.8"
 
 #bank = os.getenv("bank")
 #bank = "172.16.103.14"
@@ -34,13 +34,14 @@ def login(users):
         id = input("Digite seu Id: ")
         tipo = input('Digite o tipo de conta: ')
         
-        #if len(bank) == 12:
-        #    pix = bank[-1:] + str(getTransId())
-        #else:
-        #    pix = bank[-2:] + str(getTransId())
+        if len(bank) == 12:
+            pix = bank[-1:] + str(getTransId())
+        else:
+            pix = bank[-2:] + str(getTransId())
             
         #No laboratório comentar a linha a baixo e descomentar as de cima
-        pix = bank[-3:] + str(getTransId())
+        #pix = bank[-3:] + str(getTransId())
+
         createAccount(id, name, age, password, tipo, int(pix))
         return [id, name, age, password, tipo, int(pix)]
                 
@@ -276,13 +277,13 @@ def requestDeposito(valor, id, conta):
 def requestTransferencia(dic, id_origem):
     global bank
     
-    #if len(id_origem) == 7:
-    #    url_publish = f'http://{bank[:11] + str(id_origem)[:1]}:8088/transfers'
-    #else:
-    #    url_publish = f'http://{bank[:11] + str(id_origem)[:2]}:8088/transfers'
+    if len(str(id_origem)) == 7:
+        url_publish = f'http://{bank[:11] + str(id_origem)[:1]}:8088/transfers'
+    else:
+        url_publish = f'http://{bank[:11] + str(id_origem)[:2]}:8088/transfers'
     
     #comentar a de baixo e descomentar os de cima ao testar no laboratorio
-    url_publish = f'http://{bank[:10] + str(id_origem)[:3]}:8088/transfers'
+    #url_publish = f'http://{bank[:10] + str(id_origem)[:3]}:8088/transfers'
     try:
         # Preparar os dados para publicar na API
         payload = dic  # Supondo que data_udp é uma sequência de bytes
