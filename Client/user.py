@@ -3,6 +3,7 @@ import requests
 import json
 import random
 import time
+
 bank = "172.16.103.8"
 
 #bank = os.getenv("bank")
@@ -31,7 +32,7 @@ def login(users):
         name = input("Seu nome: ")
         age = int(input("Sua Idade: "))
         password = input("Sua senha: ")
-        id = input("Digite seu Id: ")
+        id = input("Digite seu CPF: ")
         tipo = input('Digite o tipo de conta: ')
         
         if len(bank) == 12:
@@ -151,10 +152,10 @@ def logged(user):
         limpar_terminal()
         try:
             user = getUser(user['id'])
-            print(f"==============================================================\nTitular: {user['nome']}\nSaldo: {user['contas'][0]['saldo']}\nChave Pix: {user['id']}")
+            print(f"==============================================================\nTitular: {user['nome']}\nSaldo: {user['contas'][0]['saldo']}\nCPF: {user['id']}\nChave Pix: {user["contas"][0]["id"]}")
         except Exception as e:  
             user = getUser(user[0])
-            print(f"==============================================================\nTitular: {user['nome']}\nSaldo: {user['contas'][0]['saldo']}\nChave Pix: {user['id']}")
+            print(f"==============================================================\nTitular: {user['nome']}\nSaldo: {user['contas'][0]['saldo']}\nCPF: {user['id']}\nChave Pix: {user["contas"][0]["id"]}")
         print("=============================menu=============================\n1 - Para Depositar; 2 - Para Sacar e 3 Para realizar transação\n==============================================================")
         opcao = int(input("==> "))
         if opcao == 1:
