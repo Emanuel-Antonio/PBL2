@@ -1,7 +1,7 @@
 
 <div align="center">
 
-# PBL2-Redes - Sistema de Bancos Distribuídos
+# PBL2 - Sistema de Bancos Distribuídos
 
 </div>
 
