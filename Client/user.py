@@ -24,7 +24,7 @@ def login(users):
         opcao = int(input("==>"))
         print("------------------------------")
     if opcao == 1:
-        cod = input("Digite o código da conta\n==>\n")
+        cod = input("Digite o código da conta (CPF)\n==>\n")
         password = input("Digite a senha\n==>\n")
         verificarLogin(cod, password)
         return getUser(cod)
