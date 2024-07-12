@@ -95,7 +95,7 @@ def pass_token():
                 print("Falha ao passar o token para todos os nós. Reiniciando tentativa.")
 
         else:
-            time.sleep(2)
+            time.sleep(1)
             print("Não é possível passar o token: O nó não possui o token.")
 
 def receive_token():
@@ -123,8 +123,10 @@ def receive_token():
     node_state["pass"] = True
 
 def check_token():
+    global node_state
     while True:
         time.sleep(node_state["token_check_interval"])
+        print(node_state["has_token"])
         if not node_state["has_token"] and ((time.time() - node_state["last_token_time"]) > node_state["token_timeout"]):
             print(f"O nó {node_state['node_id']} está sem o token por muito tempo. Gerando um novo token.")
             node_state["exec"] = False
@@ -135,12 +137,16 @@ def check_token():
 @app.route('/receive_token', methods=['POST'])
 def receive_token_route():
     global node_state
+    print("Recebi token")
     token_sequence = request.get_json()
     if token_sequence["Token sequence"] > node_state["token_sequence"]:
         node_state["token_sequence"] = token_sequence['Token sequence']
         node_state["exec"] = True
         receive_token()
-    return jsonify({"message": "Token recebido"}), 200
+        return jsonify({"message": "Token recebido"}), 200
+    else:
+        print(f"sequencia invalida recebeu {token_sequence["Token sequence"]} e tem {node_state["token_sequence"]}")
+        return jsonify({"message": "Token invalido"}), 401
 
 ########################################################## Token ####################################################
     
